@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 1514840848}
   - component: {fileID: 1514840847}
   - component: {fileID: 1514840846}
+  - component: {fileID: 1514840849}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -178,7 +179,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -204,6 +205,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1514840849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514840845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cbd64d9dd3db278794ab1ac87a59104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1717495969
 GameObject:
   m_ObjectHideFlags: 0
@@ -346,8 +359,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1737484117}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.25, y: -2.25, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -9.161, y: -1.339, z: 0}
+  m_LocalScale: {x: 2.8216963, y: 2.8216963, z: 2.8216963}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -379,6 +392,7 @@ GameObject:
   - component: {fileID: 2135961474}
   - component: {fileID: 2135961473}
   - component: {fileID: 2135961475}
+  - component: {fileID: 2135961476}
   m_Layer: 0
   m_Name: head
   m_TagString: Untagged
@@ -444,8 +458,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2135961472}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.35, y: 1.01, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -4.797, y: 1.563, z: 0}
+  m_LocalScale: {x: 2.1068535, y: 2.1068535, z: 2.1068535}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -464,3 +478,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   num: 0
+--- !u!58 &2135961476
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2135961472}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5

@@ -1,14 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
-using static EasingFunction;
-using UnityEngine.UI;
 using TMPro;
 
 public class Snake : MonoBehaviour
 {
-    GameObject head;
+    GameObject head, circle;
+    float spriteSize;
     Vector2 ds;
     public float speed = 10;
     public int num;
@@ -26,15 +24,32 @@ public class Snake : MonoBehaviour
         t.alignment = TextAlignmentOptions.Center;
         t.color = Color.black;
     }
+
+    void setupSpriteSize()
+    {
+        SpriteRenderer spr = head.GetComponent<SpriteRenderer>();
+        Vector3 size = (spr.bounds.max - spr.bounds.min);
+        spriteSize = size.x;
+    }
     void Start()
     {
         head = GameObject.Find("head");
+        circle = GameObject.Find("circle");
 
-        putTextAtPoint(new Vector2(transform.position.x, transform.position.y));
+        setupSpriteSize();
 
-        Debug.Log("текст выведен");
+        // putTextAtPoint(new Vector2(transform.position.x, transform.position.y));
     }
 
+    /*
+    Тут какой-то умный поиск позиции. Возвращает локальный вектор относительно данного.
+    */
+    Vector2 findNewPosition(Vector2 point)
+    {
+        float x = UnityEngine.Random.Range(-10, 10);
+        float y = UnityEngine.Random.Range(-10, 10);
+        return new Vector2(x, y);
+    }
     void AddNode()
     {
         /*
@@ -42,13 +57,24 @@ public class Snake : MonoBehaviour
         Как найти такую область? Обработка столкновений и пересечений.
         Потом поместить туда новый объект.
         */
-
+        Vector2 newPosition = findNewPosition(new Vector2()) * 2;
+        Debug.Log(String.Format("newPosition {0}, {1}", newPosition.x, newPosition.y));
         Vector3 pos = transform.position;
-        Vector3 dir = last - transform.position;
-        pos = dir.normalized * 2;
-        GameObject o = Instantiate(head, pos, Quaternion.identity);
-        o.GetComponent<Snake>().enabled = false; // не лучший вариант, создается много лишнего через такой объект.
-        nodes.Add(o);
+        Debug.Log(String.Format("pos {0}, {1}", pos.x, pos.y));
+        // Vector3 dir = last - transform.position;
+        // pos = dir.normalized * 2;
+        pos += new Vector3(newPosition.x, newPosition.y, 0);
+        Debug.Log(String.Format("pos` {0}, {1}", pos.x, pos.y));
+        
+        SpriteRenderer spr = head.GetComponent<SpriteRenderer>();
+        Vector3 size = (spr.bounds.max - spr.bounds.min);
+        Debug.Log(String.Format("size {0}, {1}", size.x, size.y));
+
+        GameObject o = Instantiate(circle, pos, Quaternion.identity);
+        o.layer = 0; //ставлю дефолтное значение, делаю видимым
+        // o.SetActive(false);
+
+        // nodes.Add(o);
     }
 
     void Update()
@@ -75,14 +101,17 @@ public class Snake : MonoBehaviour
 
         ds *= 0.8f;
 
-        GameObject prev = head;
+        // GameObject prev = head;
+        Vector3 prev = head.transform.position;
+        Vector3 t;
         /*
-        Смещаю следующие элементы на позицию предыдущего. Двигаюсь от головы к хвосту.
+        Смещаю текущий элемент на позицию предыдущего. Двигаюсь от следующего за головой(первый в списке) к хвосту.
         */
         foreach(GameObject o in nodes)
         {
-            o.transform.position = head.transform.position;
-            prev = o;
+            t = o.transform.position;
+            o.transform.position = prev;
+            prev = t;
         }
     }
 }
