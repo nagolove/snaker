@@ -17,41 +17,18 @@ public class Snake : MonoBehaviour
 
     void putTextAtPoint(Vector2 p)
     {   
-        GameObject ngo = new GameObject("myTextGO");
-        // ngo.transform.SetParent(this.transform); 
+        GameObject ngo = new GameObject("SnakeNumber");
         ngo.transform.Translate(new Vector3(p.x, p.y, 0));
-        // ngo.transform.position.x = p.x;
-        // ngo.transform.position.y = p.y;
         TextMeshPro t = ngo.AddComponent<TextMeshPro>();
         t.transform.SetParent(transform);
         t.fontSize = 8;
         t.text = String.Format("{0}", num);
-        // t.transform.localScale = new Vector3(0.1f, 0.1f, 0);
-        // RectTransform tr = t.rectTransform;
         t.alignment = TextAlignmentOptions.Center;
         t.color = Color.black;
     }
     void Start()
     {
         head = GameObject.Find("head");
-        /*
-        Text t =head.AddComponent<Text>();
-        t.transform.position = transform.position;
-        t.color = Color.red;
-        t.text = String.Format("{0}", num);
-        */
-
-        /*
-        GameObject ngo = new GameObject("myTextGO");
-        ngo.transform.SetParent(this.transform); 
-        TextMeshPro t = ngo.AddComponent<TextMeshPro>();
-        // myText.transform.SetParent(transform);
-        // t.fontSize = 38;
-        t.text = "Ta-dah!";
-        // t.transform.localScale = new Vector3(0.1f, 0.1f, 0);
-        RectTransform tr = t.rectTransform;
-        t.alignment = TextAlignmentOptions.TopLeft;
-        */
 
         putTextAtPoint(new Vector2(transform.position.x, transform.position.y));
 
@@ -60,28 +37,20 @@ public class Snake : MonoBehaviour
 
     void AddNode()
     {
-        GameObject circle = GameObject.Find("head");
-        // Debug.Log(String.Format("circle {}", circle));
+        /*
+        Сперва найти безопасную область вокруг последнего элемента. 
+        Как найти такую область? Обработка столкновений и пересечений.
+        Потом поместить туда новый объект.
+        */
+
         Vector3 pos = transform.position;
-        // pos.x -= ds.x;
-        // pos.y -= ds.y;
         Vector3 dir = last - transform.position;
-        Debug.DrawLine(transform.position, transform.position + dir, Color.red, 1000);
         pos = dir.normalized * 2;
-        GameObject o = Instantiate(circle, pos, Quaternion.identity);
-        o.GetComponent<Snake>().enabled = false; // не лучший вариант 
-        // o.SetActive(true);
+        GameObject o = Instantiate(head, pos, Quaternion.identity);
+        o.GetComponent<Snake>().enabled = false; // не лучший вариант, создается много лишнего через такой объект.
         nodes.Add(o);
     }
 
-    IEnumerable Fade(Vector2 d)
-    {
-        for (int i = 0; i < 100; i++)
-        {
-            d *= 0.19f;
-            yield return null;
-        }
-    }
     void Update()
     {
         last = transform.position;
@@ -106,9 +75,14 @@ public class Snake : MonoBehaviour
 
         ds *= 0.8f;
 
+        GameObject prev = head;
+        /*
+        Смещаю следующие элементы на позицию предыдущего. Двигаюсь от головы к хвосту.
+        */
         foreach(GameObject o in nodes)
         {
-            o.transform.position += ds3;
+            o.transform.position = head.transform.position;
+            prev = o;
         }
     }
 }
