@@ -3,17 +3,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using static EasingFunction;
+using UnityEngine.UI;
+using TMPro;
 
 public class Snake : MonoBehaviour
 {
     GameObject head;
     Vector2 ds;
     public float speed = 10;
+    public int num;
     List<GameObject> nodes = new List<GameObject>();
     Vector3 last;
+
+    void putTextAtPoint(Vector2 p)
+    {   
+        GameObject ngo = new GameObject("myTextGO");
+        // ngo.transform.SetParent(this.transform); 
+        ngo.transform.Translate(new Vector3(p.x, p.y, 0));
+        // ngo.transform.position.x = p.x;
+        // ngo.transform.position.y = p.y;
+        TextMeshPro t = ngo.AddComponent<TextMeshPro>();
+        t.transform.SetParent(transform);
+        t.fontSize = 8;
+        t.text = String.Format("{0}", num);
+        // t.transform.localScale = new Vector3(0.1f, 0.1f, 0);
+        // RectTransform tr = t.rectTransform;
+        t.alignment = TextAlignmentOptions.Center;
+        t.color = Color.black;
+    }
     void Start()
     {
         head = GameObject.Find("head");
+        /*
+        Text t =head.AddComponent<Text>();
+        t.transform.position = transform.position;
+        t.color = Color.red;
+        t.text = String.Format("{0}", num);
+        */
+
+        /*
+        GameObject ngo = new GameObject("myTextGO");
+        ngo.transform.SetParent(this.transform); 
+        TextMeshPro t = ngo.AddComponent<TextMeshPro>();
+        // myText.transform.SetParent(transform);
+        // t.fontSize = 38;
+        t.text = "Ta-dah!";
+        // t.transform.localScale = new Vector3(0.1f, 0.1f, 0);
+        RectTransform tr = t.rectTransform;
+        t.alignment = TextAlignmentOptions.TopLeft;
+        */
+
+        putTextAtPoint(new Vector2(transform.position.x, transform.position.y));
+
+        Debug.Log("текст выведен");
     }
 
     void AddNode()
@@ -24,6 +66,7 @@ public class Snake : MonoBehaviour
         // pos.x -= ds.x;
         // pos.y -= ds.y;
         Vector3 dir = last - transform.position;
+        Debug.DrawLine(transform.position, transform.position + dir, Color.red, 1000);
         pos = dir.normalized * 2;
         GameObject o = Instantiate(circle, pos, Quaternion.identity);
         o.GetComponent<Snake>().enabled = false; // не лучший вариант 
