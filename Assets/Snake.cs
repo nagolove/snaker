@@ -2,6 +2,8 @@
 using UnityEngine;
 using System;
 using TMPro;
+using Common;
+using UnityEngine.SceneManagement;
 
 public class Snake : MonoBehaviour
 {
@@ -9,6 +11,7 @@ public class Snake : MonoBehaviour
     float spriteSize;
     Vector2 ds;
     public float speed = 10;
+    public float q = 3;
     public int num;
     List<GameObject> nodes = new List<GameObject>();
     Vector3 last;
@@ -40,27 +43,27 @@ public class Snake : MonoBehaviour
         // putTextAtPoint(new Vector2(transform.position.x, transform.position.y));
     }
 
-    /*
-    Тут какой-то умный поиск позиции. Возвращает локальный вектор относительно данного.
-    */
-    Vector3 findNewPosition(Vector3 point, float r)
+    Vector3 findNewPosition(float r)
     {
         Vector3 p;
         int i = 0;
-        do
+        // float q = 2;
+        while (true)
         {
-            float x = UnityEngine.Random.Range(-spriteSize * 2, spriteSize * 2);
-            float y = UnityEngine.Random.Range(-spriteSize * 2, spriteSize * 2);
+            float x = UnityEngine.Random.Range(-(float)spriteSize * q, (float)spriteSize * q);
+            float y = UnityEngine.Random.Range(-(float)spriteSize * q, (float)spriteSize * q);
             p = new Vector3(x, y, 0);
-            Debug.Log(String.Format("len {0}, sprite size {1}", (point - p).magnitude, spriteSize));
-            Debug.Log(String.Format("len` {0}, sprite size {1}", (p - point).magnitude, spriteSize));
-            if (i++ > 20) {
-                Debug.Log("break");
+            if (i++ > 30)
+            {
+                Debug.LogWarning("break");
+                break;
+            }
+            if (p.magnitude >= spriteSize * 1.1f)
+            {
                 break;
             }
         }
-        while ((p - point).magnitude > spriteSize + r);
-        return point + p;
+        return p;
     }
     void AddNode()
     {
@@ -69,16 +72,26 @@ public class Snake : MonoBehaviour
         int collidersNum = 0;
         int maxAttemps = 10;
 
-            float r = getSpriteSize(circle);
-            Debug.Log(String.Format("r {0}", r));
-            Vector3 pos = findNewPosition(transform.position, r);
-            // Debug.Log(String.Format("pos` {0}, {1}", pos.x, pos.y));
+        float r = getSpriteSize(circle);
+        
+        Debug.Log(String.Format("r {0}", r));
+        Color color = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1);
+
+        // /*
+        for (int i = 0; i < 500; ++i)
+        {
+            Vector3 pos = transform.position + findNewPosition(r);
             o = Instantiate(circle, pos, Quaternion.identity);
+            SpriteRenderer renderer = o.GetComponent<SpriteRenderer>();
+            renderer.color = color;
             o.layer = 0;
-/*
+        }  
+        // */      
+
+        /*
         while (true)
         {
-            Vector3 pos = findNewPosition(transform.position);
+            Vector3 pos = transform.position + findNewPosition(r);
             // Debug.Log(String.Format("pos` {0}, {1}", pos.x, pos.y));
             o = Instantiate(circle, pos, Quaternion.identity);
             Collider2D collider = o.GetComponent<CircleCollider2D>();
@@ -97,9 +110,9 @@ public class Snake : MonoBehaviour
         else
         {
             o.layer = 0; //ставлю дефолтное значение, делаю видимым
-            // nodes.Add(o);
+                         // nodes.Add(o);
         }
-        */
+        //*/
     }
 
     void CheckCollisionPoints()
@@ -132,14 +145,22 @@ public class Snake : MonoBehaviour
         if (Input.GetKey("down"))
             ds = new Vector2(0, -speed * Time.deltaTime);
 
-        if (Input.GetKeyDown("a"))
+        if (!Input.GetKey(KeyCode.LeftShift))
         {
-            Debug.Log("add node");
-            AddNode();
+            if (Input.GetKeyDown("a"))
+            {
+                Debug.Log("add node");
+                AddNode();
+            }
+            if (Input.GetKeyDown("s"))
+            {
+                CheckCollisionPoints();
+            }
         }
-        if (Input.GetKeyDown("s"))
+
+        if (Input.GetKeyDown("r"))
         {
-            CheckCollisionPoints();
+            SceneManager.LoadScene("Main");
         }
 
         Vector3 ds3 = new Vector3(ds.x, ds.y, 0);
