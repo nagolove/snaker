@@ -25,18 +25,17 @@ public class Snake : MonoBehaviour
         t.color = Color.black;
     }
 
-    void setupSpriteSize()
+    float getSpriteSize(GameObject obj)
     {
-        SpriteRenderer spr = head.GetComponent<SpriteRenderer>();
-        Vector3 size = (spr.bounds.max - spr.bounds.min);
-        spriteSize = size.x;
+        SpriteRenderer spr = obj.GetComponent<SpriteRenderer>();
+        return (spr.bounds.max - spr.bounds.min).x;
     }
     void Start()
     {
         head = GameObject.Find("head");
         circle = GameObject.Find("circle");
 
-        setupSpriteSize();
+        spriteSize = getSpriteSize(head);
 
         // putTextAtPoint(new Vector2(transform.position.x, transform.position.y));
     }
@@ -44,14 +43,14 @@ public class Snake : MonoBehaviour
     /*
     Тут какой-то умный поиск позиции. Возвращает локальный вектор относительно данного.
     */
-    Vector3 findNewPosition(Vector3 point)
+    Vector3 findNewPosition(Vector3 point, float r)
     {
         Vector3 p;
         int i = 0;
         do
         {
-            float x = UnityEngine.Random.Range(-spriteSize * 20, spriteSize * 20);
-            float y = UnityEngine.Random.Range(-spriteSize * 20, spriteSize * 20);
+            float x = UnityEngine.Random.Range(-spriteSize * 2, spriteSize * 2);
+            float y = UnityEngine.Random.Range(-spriteSize * 2, spriteSize * 2);
             p = new Vector3(x, y, 0);
             Debug.Log(String.Format("len {0}, sprite size {1}", (point - p).magnitude, spriteSize));
             Debug.Log(String.Format("len` {0}, sprite size {1}", (p - point).magnitude, spriteSize));
@@ -60,7 +59,7 @@ public class Snake : MonoBehaviour
                 break;
             }
         }
-        while ((p - point).magnitude < spriteSize * 2);
+        while ((p - point).magnitude > spriteSize + r);
         return point + p;
     }
     void AddNode()
@@ -70,6 +69,13 @@ public class Snake : MonoBehaviour
         int collidersNum = 0;
         int maxAttemps = 10;
 
+            float r = getSpriteSize(circle);
+            Debug.Log(String.Format("r {0}", r));
+            Vector3 pos = findNewPosition(transform.position, r);
+            // Debug.Log(String.Format("pos` {0}, {1}", pos.x, pos.y));
+            o = Instantiate(circle, pos, Quaternion.identity);
+            o.layer = 0;
+/*
         while (true)
         {
             Vector3 pos = findNewPosition(transform.position);
@@ -93,6 +99,7 @@ public class Snake : MonoBehaviour
             o.layer = 0; //ставлю дефолтное значение, делаю видимым
             // nodes.Add(o);
         }
+        */
     }
 
     void CheckCollisionPoints()
@@ -149,7 +156,7 @@ public class Snake : MonoBehaviour
         foreach (GameObject o in nodes)
         {
             t = o.transform.position;
-            o.transform.position = prev;
+            // o.transform.position = prev;
             prev = t;
         }
     }
