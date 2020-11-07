@@ -44,11 +44,17 @@ public class Snake : MonoBehaviour
     /*
     Тут какой-то умный поиск позиции. Возвращает локальный вектор относительно данного.
     */
-    Vector3 findNewPosition(Vector2 point)
+    Vector3 findNewPosition(Vector3 point)
     {
-        float x = UnityEngine.Random.Range(-spriteSize, spriteSize);
-        float y = UnityEngine.Random.Range(-spriteSize, spriteSize);
-        return new Vector3(x, y, 0);
+        Vector3 p;
+        do
+        {
+            float x = UnityEngine.Random.Range(-spriteSize, spriteSize);
+            float y = UnityEngine.Random.Range(-spriteSize, spriteSize);
+            p = new Vector3(x, y, 0);
+        }
+        while ((point - p).magnitude > spriteSize);
+        return p;
     }
     void AddNode()
     {
@@ -59,13 +65,13 @@ public class Snake : MonoBehaviour
 
         while (true)
         {
-            Vector3 pos = transform.position + findNewPosition(new Vector2()) * 2;
+            Vector3 pos = findNewPosition(transform.position);
             Debug.Log(String.Format("pos` {0}, {1}", pos.x, pos.y));
             o = Instantiate(circle, pos, Quaternion.identity);
             Collider2D collider = o.GetComponent<CircleCollider2D>();
-
-
             collidersNum = collider.OverlapCollider(new ContactFilter2D(), results);
+            if (collidersNum != 0)
+                Destroy(o);
             if (collidersNum == 0 || maxAttemps <= 0)
                 break;
             maxAttemps--;
