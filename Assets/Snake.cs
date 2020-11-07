@@ -46,8 +46,8 @@ public class Snake : MonoBehaviour
     */
     Vector2 findNewPosition(Vector2 point)
     {
-        float x = UnityEngine.Random.Range(-10, 10);
-        float y = UnityEngine.Random.Range(-10, 10);
+        float x = UnityEngine.Random.Range(-spriteSize, spriteSize);
+        float y = UnityEngine.Random.Range(-spriteSize, spriteSize);
         return new Vector2(x, y);
     }
     void AddNode()
@@ -66,11 +66,16 @@ public class Snake : MonoBehaviour
         pos += new Vector3(newPosition.x, newPosition.y, 0);
         Debug.Log(String.Format("pos` {0}, {1}", pos.x, pos.y));
         
-        SpriteRenderer spr = head.GetComponent<SpriteRenderer>();
-        Vector3 size = (spr.bounds.max - spr.bounds.min);
-        Debug.Log(String.Format("size {0}, {1}", size.x, size.y));
-
         GameObject o = Instantiate(circle, pos, Quaternion.identity);
+        Collider2D collider = o.GetComponent<CircleCollider2D>();
+        ContactPoint2D[] results = new ContactPoint2D[0];
+        // collider.OverlapCollider(ContactFilter2D.NoFilter(), results);
+        int contactsNum = collider.GetContacts(new ContactFilter2D(), results);
+        Debug.Log(String.Format("contactsNum {0}", contactsNum));
+        foreach(ContactPoint2D p in results)
+        {
+            Debug.Log(String.Format("contact {0},{1}", p.point.x, p.point.y));
+        }
         o.layer = 0; //ставлю дефолтное значение, делаю видимым
         // o.SetActive(false);
 
