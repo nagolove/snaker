@@ -47,14 +47,21 @@ public class Snake : MonoBehaviour
     Vector3 findNewPosition(Vector3 point)
     {
         Vector3 p;
+        int i = 0;
         do
         {
-            float x = UnityEngine.Random.Range(-spriteSize, spriteSize);
-            float y = UnityEngine.Random.Range(-spriteSize, spriteSize);
+            float x = UnityEngine.Random.Range(-spriteSize * 20, spriteSize * 20);
+            float y = UnityEngine.Random.Range(-spriteSize * 20, spriteSize * 20);
             p = new Vector3(x, y, 0);
+            Debug.Log(String.Format("len {0}, sprite size {1}", (point - p).magnitude, spriteSize));
+            Debug.Log(String.Format("len` {0}, sprite size {1}", (p - point).magnitude, spriteSize));
+            if (i++ > 20) {
+                Debug.Log("break");
+                break;
+            }
         }
-        while ((point - p).magnitude > spriteSize);
-        return p;
+        while ((p - point).magnitude < spriteSize * 2);
+        return point + p;
     }
     void AddNode()
     {
@@ -66,7 +73,7 @@ public class Snake : MonoBehaviour
         while (true)
         {
             Vector3 pos = findNewPosition(transform.position);
-            Debug.Log(String.Format("pos` {0}, {1}", pos.x, pos.y));
+            // Debug.Log(String.Format("pos` {0}, {1}", pos.x, pos.y));
             o = Instantiate(circle, pos, Quaternion.identity);
             Collider2D collider = o.GetComponent<CircleCollider2D>();
             collidersNum = collider.OverlapCollider(new ContactFilter2D(), results);
@@ -84,7 +91,7 @@ public class Snake : MonoBehaviour
         else
         {
             o.layer = 0; //ставлю дефолтное значение, делаю видимым
-            nodes.Add(o);
+            // nodes.Add(o);
         }
     }
 
