@@ -14,7 +14,7 @@ public class Snake : MonoBehaviour
     Vector3 last;
 
     void putTextAtPoint(Vector2 p)
-    {   
+    {
         GameObject ngo = new GameObject("SnakeNumber");
         ngo.transform.Translate(new Vector3(p.x, p.y, 0));
         TextMeshPro t = ngo.AddComponent<TextMeshPro>();
@@ -44,44 +44,61 @@ public class Snake : MonoBehaviour
     /*
     Тут какой-то умный поиск позиции. Возвращает локальный вектор относительно данного.
     */
-    Vector2 findNewPosition(Vector2 point)
+    Vector3 findNewPosition(Vector2 point)
     {
         float x = UnityEngine.Random.Range(-spriteSize, spriteSize);
         float y = UnityEngine.Random.Range(-spriteSize, spriteSize);
-        return new Vector2(x, y);
+        return new Vector3(x, y, 0);
     }
     void AddNode()
     {
-        /*
-        Сперва найти безопасную область вокруг последнего элемента. 
-        Как найти такую область? Обработка столкновений и пересечений.
-        Потом поместить туда новый объект.
-        */
-        Vector2 newPosition = findNewPosition(new Vector2()) * 2;
-        Debug.Log(String.Format("newPosition {0}, {1}", newPosition.x, newPosition.y));
-        Vector3 pos = transform.position;
-        Debug.Log(String.Format("pos {0}, {1}", pos.x, pos.y));
-        // Vector3 dir = last - transform.position;
-        // pos = dir.normalized * 2;
-        pos += new Vector3(newPosition.x, newPosition.y, 0);
-        Debug.Log(String.Format("pos` {0}, {1}", pos.x, pos.y));
-        
-        GameObject o = Instantiate(circle, pos, Quaternion.identity);
-        Collider2D collider = o.GetComponent<CircleCollider2D>();
-        ContactPoint2D[] results = new ContactPoint2D[0];
-        // collider.OverlapCollider(ContactFilter2D.NoFilter(), results);
-        int contactsNum = collider.GetContacts(new ContactFilter2D(), results);
-        Debug.Log(String.Format("contactsNum {0}", contactsNum));
-        foreach(ContactPoint2D p in results)
-        {
-            Debug.Log(String.Format("contact {0},{1}", p.point.x, p.point.y));
-        }
-        o.layer = 0; //ставлю дефолтное значение, делаю видимым
-        // o.SetActive(false);
+        GameObject o = null;
+        Collider2D[] results = new Collider2D[3];
+        int collidersNum = 0;
+        int maxAttemps = 10;
 
-        // nodes.Add(o);
+        while (true)
+        {
+            Vector3 pos = transform.position + findNewPosition(new Vector2()) * 2;
+            Debug.Log(String.Format("pos` {0}, {1}", pos.x, pos.y));
+            o = Instantiate(circle, pos, Quaternion.identity);
+            Collider2D collider = o.GetComponent<CircleCollider2D>();
+
+
+            collidersNum = collider.OverlapCollider(new ContactFilter2D(), results);
+            if (collidersNum == 0 || maxAttemps <= 0)
+                break;
+            maxAttemps--;
+        }
+        Debug.Log(String.Format("max attempts {0}, collidersNum {1}", maxAttemps, collidersNum));
+        if (collidersNum != 0)
+        {
+            Destroy(o);
+        }
+        else
+        {
+            o.layer = 0; //ставлю дефолтное значение, делаю видимым
+            nodes.Add(o);
+        }
     }
 
+    void CheckCollisionPoints()
+    {
+        Collider2D collider = GetComponent<CircleCollider2D>();
+        ContactPoint2D[] results = new ContactPoint2D[10];
+        // int pointsNum = collider.GetContacts(new ContactFilter2D(), results);
+        Collider2D[] colliders = new Collider2D[10];
+        int pointsNum = collider.OverlapCollider(new ContactFilter2D(), colliders);
+        Debug.Log(String.Format("pointsNum {0}", pointsNum));
+        foreach (Collider2D c in colliders)
+        {
+            Debug.Log(String.Format("collider {0}", c.name));
+        }
+        foreach (ContactPoint2D p in results)
+        {
+            Debug.Log(String.Format("point {0}, {1}", p.point.x, p.point.y));
+        }
+    }
     void Update()
     {
         last = transform.position;
@@ -94,11 +111,15 @@ public class Snake : MonoBehaviour
             ds = new Vector2(0, speed * Time.deltaTime);
         if (Input.GetKey("down"))
             ds = new Vector2(0, -speed * Time.deltaTime);
-        
-        if (Input.GetKeyDown("a")) 
+
+        if (Input.GetKeyDown("a"))
         {
             Debug.Log("add node");
             AddNode();
+        }
+        if (Input.GetKeyDown("s"))
+        {
+            CheckCollisionPoints();
         }
 
         Vector3 ds3 = new Vector3(ds.x, ds.y, 0);
@@ -112,7 +133,7 @@ public class Snake : MonoBehaviour
         /*
         Смещаю текущий элемент на позицию предыдущего. Двигаюсь от следующего за головой(первый в списке) к хвосту.
         */
-        foreach(GameObject o in nodes)
+        foreach (GameObject o in nodes)
         {
             t = o.transform.position;
             o.transform.position = prev;
