@@ -2,8 +2,9 @@
 using UnityEngine;
 using System;
 using TMPro;
-using Common;
+using System.Linq;
 using UnityEngine.SceneManagement;
+using static UnityEngine.Random;
 
 public class Snake : MonoBehaviour
 {
@@ -45,55 +46,22 @@ public class Snake : MonoBehaviour
 
     Vector3 findNewPosition(float r)
     {
-        Vector3 p;
-        int i = 0;
-        // float q = 2;
-        while (true)
-        {
-            float x = UnityEngine.Random.Range(-(float)spriteSize * q, (float)spriteSize * q);
-            float y = UnityEngine.Random.Range(-(float)spriteSize * q, (float)spriteSize * q);
-            p = new Vector3(x, y, 0);
-            if (i++ > 30)
-            {
-                Debug.LogWarning("break");
-                break;
-            }
-            if (p.magnitude >= spriteSize * 1.1f)
-            {
-                break;
-            }
-        }
-        return p;
+        Common.Polar polar;
+        polar.angle = UnityEngine.Random.Range(0.0f, Mathf.PI * 2.0f);
+        polar.length = (r + spriteSize) / 2.0f;
+        Vector2 cart = Common.fromPolar(polar);
+        return new Vector3(cart.x, cart.y, 0);
     }
-    void AddNode()
+    void AddNode(Vector3 pos)
     {
         GameObject o = null;
         Collider2D[] results = new Collider2D[3];
         int collidersNum = 0;
-        int maxAttemps = 10;
-
+        int maxAttemps = 20;
         float r = getSpriteSize(circle);
-        
-        Debug.Log(String.Format("r {0}", r));
-        Color color = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1);
-
-        // /*
-        for (int i = 0; i < 500; ++i)
-        {
-            Vector3 pos = transform.position + findNewPosition(r);
-            o = Instantiate(circle, pos, Quaternion.identity);
-            SpriteRenderer renderer = o.GetComponent<SpriteRenderer>();
-            renderer.color = color;
-            o.layer = 0;
-        }  
-        // */      
-
-        /*
         while (true)
         {
-            Vector3 pos = transform.position + findNewPosition(r);
-            // Debug.Log(String.Format("pos` {0}, {1}", pos.x, pos.y));
-            o = Instantiate(circle, pos, Quaternion.identity);
+            o = Instantiate(circle, pos + findNewPosition(r + 0.1f), Quaternion.identity);
             Collider2D collider = o.GetComponent<CircleCollider2D>();
             collidersNum = collider.OverlapCollider(new ContactFilter2D(), results);
             if (collidersNum != 0)
@@ -102,24 +70,25 @@ public class Snake : MonoBehaviour
                 break;
             maxAttemps--;
         }
-        Debug.Log(String.Format("max attempts {0}, collidersNum {1}", maxAttemps, collidersNum));
+        // Debug.Log(String.Format("max attempts {0}, collidersNum {1}", maxAttemps, collidersNum));
         if (collidersNum != 0)
         {
+            // Debug.Log("Destroy");
             Destroy(o);
         }
         else
         {
             o.layer = 0; //ставлю дефолтное значение, делаю видимым
-                         // nodes.Add(o);
-        }
-        //*/
+            SpriteRenderer renderer = o.GetComponent<SpriteRenderer>();
+            renderer.color = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
+            nodes.Add(o);
+        }        
     }
 
     void CheckCollisionPoints()
     {
         Collider2D collider = GetComponent<CircleCollider2D>();
         ContactPoint2D[] results = new ContactPoint2D[10];
-        // int pointsNum = collider.GetContacts(new ContactFilter2D(), results);
         Collider2D[] colliders = new Collider2D[10];
         int pointsNum = collider.OverlapCollider(new ContactFilter2D(), colliders);
         Debug.Log(String.Format("pointsNum {0}", pointsNum));
@@ -150,7 +119,12 @@ public class Snake : MonoBehaviour
             if (Input.GetKeyDown("a"))
             {
                 Debug.Log("add node");
-                AddNode();
+                Vector3 pos = head.transform.position;
+                if (nodes.Count > 0)
+                {
+                    pos = nodes.Last().transform.position;
+                }
+                AddNode(pos);
             }
             if (Input.GetKeyDown("s"))
             {
@@ -169,7 +143,8 @@ public class Snake : MonoBehaviour
         ds *= 0.8f;
 
         // GameObject prev = head;
-        Vector3 prev = head.transform.position;
+        // Vector3 prev = head.transform.position;
+        Vector3 prev = last;
         Vector3 t;
         /*
         Смещаю текущий элемент на позицию предыдущего. Двигаюсь от следующего за головой(первый в списке) к хвосту.
