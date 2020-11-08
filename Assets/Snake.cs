@@ -62,12 +62,6 @@ public class Snake : MonoBehaviour
         t.alignment = TextAlignmentOptions.Center;
         t.color = Color.black;
     }
-
-    float getSpriteSize(GameObject obj)
-    {
-        SpriteRenderer spr = obj.GetComponent<SpriteRenderer>();
-        return (spr.bounds.max - spr.bounds.min).x;
-    }
     void Start()
     {
         head = GameObject.Find("head");
@@ -180,13 +174,7 @@ public class Snake : MonoBehaviour
         int num = collision.GetContacts(points);
         foreach(ContactPoint2D point in points)
         {
-            // Debug.Log(String.Format("point {0}, {1}", point.point.x, point.point.y));
-            // circleDrawer.Circle(point.point, 10, Color.red);
-            // Debug.Log(String.Format("{0}", point.ToString()))
             GameObject o = point.otherCollider.gameObject;
-            Debug.Log(String.Format("normal {0}, {1}", point.normal.x, point.normal.y));
-            
-            // o.transform.position -= new Vector3(point.normal.x, point.normal.y);
             o.transform.position -= new Vector3(point.relativeVelocity.x, point.relativeVelocity.y);
         }
     }
@@ -198,30 +186,15 @@ public class Snake : MonoBehaviour
         float diffLen = diff.magnitude;
         if (diff != Vector3.zero) // может быть неточное сравнение плавающих чисел
         {
-            /*
-            Смещаю текущий элемент на позицию предыдущего. Двигаюсь от следующего за головой(первый в списке) к хвосту.
-            Получается параллельный перенос всех кружков. Нужен не параллельный перенос, а связь
-            кружков жесткой сцепкой данной длины на двух шарнирах(в центрах кружков).
-
-            Что если находить вектор направления, нормализовать его, а потом умножать доводя до необходимой длины?
-
-            Частный случай - горизонтальная змейка вида [Xoooooo]
-            И ее передвижение справа на лево укладывается в параллельный перенос(если голова выровнена от тела).
-
-            Двигать только на длину ds
-            */
-            PushDrawLine(transform.position, transform.position + diff, Color.red);
+            // PushDrawLine(transform.position, transform.position + diff, Color.red);
             foreach (GameObject o in nodes)
             {
                 Vector3 t = o.transform.position;
                 Vector3 dir = prev - o.transform.position;
-                // Debug.Log(String.Format("dir len {0}", dir.magnitude));
                 dir = Vector3.ClampMagnitude(dir, dsLen);
-                PushDrawLine(o.transform.position, o.transform.position + dir, Color.red);
+                // PushDrawLine(o.transform.position, o.transform.position + dir, Color.red);
                 float len = (lastPosition - o.transform.position).magnitude;
-                // dir *= len;
                 o.transform.position += dir;
-                // o.transform.position -= diff;
                 prev = t;
             }
         }

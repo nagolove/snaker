@@ -56,4 +56,10 @@ public class Common : MonoBehaviour
         GL.End();
         GL.PopMatrix();
     }
+    public static float getSpriteSize(GameObject obj)
+    {
+        SpriteRenderer spr = obj.GetComponent<SpriteRenderer>();
+        return (spr.bounds.max - spr.bounds.min).x;
+    }
+
 }
