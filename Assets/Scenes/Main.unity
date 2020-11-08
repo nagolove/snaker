@@ -170,6 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+  q: 3
   num: 0
 --- !u!212 &379118016
 SpriteRenderer:
@@ -352,6 +353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cbd64d9dd3db278794ab1ac87a59104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 10
 --- !u!1 &1717495969
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,6 +530,7 @@ GameObject:
   - component: {fileID: 2135961473}
   - component: {fileID: 2135961475}
   - component: {fileID: 2135961476}
+  - component: {fileID: 2135961477}
   m_Layer: 0
   m_Name: head
   m_TagString: Untagged
@@ -612,6 +615,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+  q: 3
   num: 0
 --- !u!58 &2135961476
 CircleCollider2D:
@@ -629,3 +633,15 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &2135961477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2135961472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3e90d4c153bea5ccadf76148a455a43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

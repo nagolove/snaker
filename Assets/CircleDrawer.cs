@@ -9,7 +9,7 @@ public class CircleDrawer : MonoBehaviour
     void Start()
     {
         lineRenderer = new LineRenderer();
-        lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
+        // lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
     }
 
     public void Circle(Vector3 pos, float r, Color color)

@@ -75,6 +75,7 @@ public class Snake : MonoBehaviour
 
         spriteSize = getSpriteSize(head);
         circleDrawer = GetComponent<CircleDrawer>();
+        // circleDrawer.
         // putTextAtPoint(new Vector2(transform.position.x, transform.position.y));
     }
     void AddNode(Vector3 pos, float size)
@@ -179,8 +180,14 @@ public class Snake : MonoBehaviour
         int num = collision.GetContacts(points);
         foreach(ContactPoint2D point in points)
         {
-            Debug.Log(String.Format("point {0}, {1}", point.point.x, point.point.y));
-            circleDrawer.Circle(point.point, 10, Color.red);
+            // Debug.Log(String.Format("point {0}, {1}", point.point.x, point.point.y));
+            // circleDrawer.Circle(point.point, 10, Color.red);
+            // Debug.Log(String.Format("{0}", point.ToString()))
+            GameObject o = point.otherCollider.gameObject;
+            Debug.Log(String.Format("normal {0}, {1}", point.normal.x, point.normal.y));
+            
+            // o.transform.position -= new Vector3(point.normal.x, point.normal.y);
+            o.transform.position -= new Vector3(point.relativeVelocity.x, point.relativeVelocity.y);
         }
     }
     void MoveTail()
@@ -208,7 +215,7 @@ public class Snake : MonoBehaviour
             {
                 Vector3 t = o.transform.position;
                 Vector3 dir = prev - o.transform.position;
-                Debug.Log(String.Format("dir len {0}", dir.magnitude));
+                // Debug.Log(String.Format("dir len {0}", dir.magnitude));
                 dir = Vector3.ClampMagnitude(dir, dsLen);
                 PushDrawLine(o.transform.position, o.transform.position + dir, Color.red);
                 float len = (lastPosition - o.transform.position).magnitude;
