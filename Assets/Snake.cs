@@ -5,17 +5,51 @@ using TMPro;
 using System.Linq;
 using UnityEngine.SceneManagement;
 using static UnityEngine.Random;
+using static Common;
 
 public class Snake : MonoBehaviour
 {
     GameObject head, circle;
     float spriteSize;
-    Vector2 ds;
+    Vector2 ds, dsOrig;
     public float speed = 10;
     public float q = 3;
     public int num;
     List<GameObject> nodes = new List<GameObject>();
-    Vector3 last;
+    Vector3 lastPosition;
+    CircleDrawer circleDrawer;
+
+    struct Line
+    {
+        public Vector2 from, to;
+        public Color color;
+        public Line(Vector2 from, Vector2 to, Color color)
+        {
+            this.from = from;            
+            this.to = to;
+            this.color = color;
+        }
+    }
+    List<Line> lines = new List<Line>();
+
+    void PushDrawLine(Vector2 from, Vector2 to, Color color)
+    {
+        lines.Add(new Line(from, to, color));
+    }
+
+    void DrawLineList()
+    {
+        foreach(Line line in lines)
+        {
+            Common.DrawLineGL(line.from, line.to, line.color);
+        }
+        lines.Clear();
+    }
+
+    void OnRenderObject()
+    {
+        DrawLineList();
+    }
 
     void putTextAtPoint(Vector2 p)
     {
@@ -40,42 +74,26 @@ public class Snake : MonoBehaviour
         circle = GameObject.Find("circle");
 
         spriteSize = getSpriteSize(head);
-
+        circleDrawer = GetComponent<CircleDrawer>();
         // putTextAtPoint(new Vector2(transform.position.x, transform.position.y));
     }
-
-    Vector3 findNewPosition(float len)
-    {
-        Common.Polar polar;
-        polar.angle = UnityEngine.Random.Range(0.0f, Mathf.PI * 2.0f);
-        polar.length = len;
-        Vector2 cart = Common.fromPolar(polar);
-        return new Vector3(cart.x, cart.y, 0);
-    }
-    void AddNode2(Vector3 pos, float size)
+    void AddNode(Vector3 pos, float size)
     {
         GameObject o = null;
         Collider2D[] results = new Collider2D[10];
         int collidersNum = 0;
-        int maxAttemps = 100; // сколько попыток на окружность делать
+        int maxAttemps = 50; // сколько попыток на окружность делать
         float r = getSpriteSize(circle);
         float angle = 0.0f;
         float dAngle = (float)Math.PI * 2.0f / maxAttemps;
         for (int i = 0; i < maxAttemps; ++i)
-        {            
+        {
             Vector2 cart = Common.fromPolar(angle, ((r + 0.1f) + size) / 2.0f);
             Vector3 newPos = new Vector3(cart.x, cart.y, 0);
             angle += dAngle;
             o = Instantiate(circle, pos + newPos, Quaternion.identity);
             Collider2D collider = o.GetComponent<CircleCollider2D>();
             collidersNum = collider.OverlapCollider(new ContactFilter2D(), results);
-
-            // Debug.Log(String.Format("collidersNum {0}", collidersNum));
-            // for (int j = 0; j < collidersNum; ++j)
-            // {
-            //     Debug.Log(String.Format("res {0}", results[j].name));
-            // }
-
             if (collidersNum != 0)
             {
                 Destroy(o);
@@ -84,8 +102,6 @@ public class Snake : MonoBehaviour
             else
                 break;
         }
-        Debug.Log(String.Format("max attempts {0}, collidersNum {1}", maxAttemps, collidersNum));
-        Debug.Log(String.Format("new pos {0}, {1}", o.transform.position.x, o.transform.position.y));
         if (o)
         {
             o.layer = 0; //ставлю дефолтное значение, делаю видимым
@@ -94,46 +110,6 @@ public class Snake : MonoBehaviour
             nodes.Add(o);
         }
     }
-    void AddNode(Vector3 pos, float size)
-    {
-        GameObject o = null;
-        Collider2D[] results = new Collider2D[3];
-        int collidersNum = 0;
-        int maxAttemps = 100; // сколько попыток на окружность делать
-        float r = getSpriteSize(circle);
-        while (true)
-        {
-            /*
-            findNewPosition можно запускать с разным значением угла, проверяя по кругу подходящие места
-            */
-            o = Instantiate(circle, pos + findNewPosition(((r + 0.1f) + size) / 2.0f), Quaternion.identity);
-            Collider2D collider = o.GetComponent<CircleCollider2D>();
-            collidersNum = collider.OverlapCollider(new ContactFilter2D(), results);
-            if (collidersNum != 0)
-            {
-                Destroy(o);
-            }
-            else
-                break;
-            if (maxAttemps-- <= 0)
-                break;
-        }
-        Debug.Log(String.Format("max attempts {0}, collidersNum {1}", maxAttemps, collidersNum));
-        Debug.Log(String.Format("new pos {0}, {1}", o.transform.position.x, o.transform.position.y));
-        if (collidersNum != 0)
-        {
-            Debug.Log("Destroy");
-            // Destroy(o);
-        }
-        // else
-        {
-            o.layer = 0; //ставлю дефолтное значение, делаю видимым
-            SpriteRenderer renderer = o.GetComponent<SpriteRenderer>();
-            renderer.color = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
-            nodes.Add(o);
-        }
-    }
-
     void CheckCollisionPoints()
     {
         Collider2D collider = GetComponent<CircleCollider2D>();
@@ -152,7 +128,7 @@ public class Snake : MonoBehaviour
     }
     void Update()
     {
-        last = transform.position;
+        lastPosition = transform.position;
 
         if (Input.GetKey("left"))
             ds = new Vector2(-speed * Time.deltaTime, 0);
@@ -177,7 +153,7 @@ public class Snake : MonoBehaviour
                     pos = obj.transform.position;
                     size = getSpriteSize(obj);
                 }
-                AddNode2(pos, size);
+                AddNode(pos, size);
             }
             if (Input.GetKeyDown("s"))
             {
@@ -190,23 +166,57 @@ public class Snake : MonoBehaviour
             SceneManager.LoadScene("Main");
         }
 
-        Vector3 ds3 = new Vector3(ds.x, ds.y, 0);
-        head.transform.position += ds3;
-
+        dsOrig = ds;
+        head.transform.position += new Vector3(ds.x, ds.y, 0);
         ds *= 0.8f;
 
-        // GameObject prev = head;
-        // Vector3 prev = head.transform.position;
-        Vector3 prev = last;
-        Vector3 t;
-        /*
-        Смещаю текущий элемент на позицию предыдущего. Двигаюсь от следующего за головой(первый в списке) к хвосту.
-        */
-        foreach (GameObject o in nodes)
+        MoveTail();
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        ContactPoint2D[] points = new ContactPoint2D[collision.contactCount];
+        int num = collision.GetContacts(points);
+        foreach(ContactPoint2D point in points)
         {
-            // t = o.transform.position;
-            // o.transform.position = prev;
-            // prev = t;
+            Debug.Log(String.Format("point {0}, {1}", point.point.x, point.point.y));
+            circleDrawer.Circle(point.point, 10, Color.red);
+        }
+    }
+    void MoveTail()
+    {
+        Vector3 prev = transform.position;
+        float dsLen = dsOrig.magnitude;
+        Vector3 diff = lastPosition - transform.position;
+        float diffLen = diff.magnitude;
+        if (diff != Vector3.zero) // может быть неточное сравнение плавающих чисел
+        {
+            /*
+            Смещаю текущий элемент на позицию предыдущего. Двигаюсь от следующего за головой(первый в списке) к хвосту.
+            Получается параллельный перенос всех кружков. Нужен не параллельный перенос, а связь
+            кружков жесткой сцепкой данной длины на двух шарнирах(в центрах кружков).
+
+            Что если находить вектор направления, нормализовать его, а потом умножать доводя до необходимой длины?
+
+            Частный случай - горизонтальная змейка вида [Xoooooo]
+            И ее передвижение справа на лево укладывается в параллельный перенос(если голова выровнена от тела).
+
+            Двигать только на длину ds
+            */
+            PushDrawLine(transform.position, transform.position + diff, Color.red);
+            foreach (GameObject o in nodes)
+            {
+                Vector3 t = o.transform.position;
+                Vector3 dir = prev - o.transform.position;
+                Debug.Log(String.Format("dir len {0}", dir.magnitude));
+                dir = Vector3.ClampMagnitude(dir, dsLen);
+                PushDrawLine(o.transform.position, o.transform.position + dir, Color.red);
+                float len = (lastPosition - o.transform.position).magnitude;
+                // dir *= len;
+                o.transform.position += dir;
+                // o.transform.position -= diff;
+                prev = t;
+            }
         }
     }
 }
