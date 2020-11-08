@@ -33,7 +33,8 @@ public class DishSpawner : MonoBehaviour
         if (newTime - time >= dishDelay)
         {
             Vector3 position = generatePosInCircle(transform.position);
-            GameObject.Instantiate(dish, position, Quaternion.identity);
+            GameObject o = GameObject.Instantiate(dish, position, Quaternion.identity);
+            o.layer = 0; // включаю видимость
             time = newTime;
         }
     }
