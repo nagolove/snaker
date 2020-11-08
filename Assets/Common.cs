@@ -9,6 +9,11 @@ public class Common : MonoBehaviour
     {
         public float angle;
         public float length;
+        public Polar(float a, float len)
+        {
+            angle = a;
+            length = len;
+        }
     }
 
     public static Texture2D lineTex;
@@ -22,6 +27,11 @@ public class Common : MonoBehaviour
     public static Vector2 fromPolar(Polar p)
     {
         return new Vector2(p.length * Mathf.Cos(p.angle), p.length * Mathf.Sin(p.angle));
+    }
+
+    public static Vector2 fromPolar(float angle, float length)
+    {
+        return fromPolar(new Polar(angle, length));
     }
     public GameObject searchObjectFromRoot(string name)
     {

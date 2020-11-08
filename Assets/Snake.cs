@@ -44,45 +44,94 @@ public class Snake : MonoBehaviour
         // putTextAtPoint(new Vector2(transform.position.x, transform.position.y));
     }
 
-    Vector3 findNewPosition(float r)
+    Vector3 findNewPosition(float len)
     {
         Common.Polar polar;
         polar.angle = UnityEngine.Random.Range(0.0f, Mathf.PI * 2.0f);
-        polar.length = (r + spriteSize) / 2.0f;
+        polar.length = len;
         Vector2 cart = Common.fromPolar(polar);
         return new Vector3(cart.x, cart.y, 0);
     }
-    void AddNode(Vector3 pos)
+    void AddNode2(Vector3 pos, float size)
     {
         GameObject o = null;
-        Collider2D[] results = new Collider2D[3];
+        Collider2D[] results = new Collider2D[10];
         int collidersNum = 0;
-        int maxAttemps = 20;
+        int maxAttemps = 100; // сколько попыток на окружность делать
         float r = getSpriteSize(circle);
-        while (true)
-        {
-            o = Instantiate(circle, pos + findNewPosition(r + 0.1f), Quaternion.identity);
+        float angle = 0.0f;
+        float dAngle = (float)Math.PI * 2.0f / maxAttemps;
+        for (int i = 0; i < maxAttemps; ++i)
+        {            
+            Vector2 cart = Common.fromPolar(angle, ((r + 0.1f) + size) / 2.0f);
+            Vector3 newPos = new Vector3(cart.x, cart.y, 0);
+            angle += dAngle;
+            o = Instantiate(circle, pos + newPos, Quaternion.identity);
             Collider2D collider = o.GetComponent<CircleCollider2D>();
             collidersNum = collider.OverlapCollider(new ContactFilter2D(), results);
+
+            // Debug.Log(String.Format("collidersNum {0}", collidersNum));
+            // for (int j = 0; j < collidersNum; ++j)
+            // {
+            //     Debug.Log(String.Format("res {0}", results[j].name));
+            // }
+
             if (collidersNum != 0)
+            {
                 Destroy(o);
-            if (collidersNum == 0 || maxAttemps <= 0)
+                o = null;
+            }
+            else
                 break;
-            maxAttemps--;
         }
-        // Debug.Log(String.Format("max attempts {0}, collidersNum {1}", maxAttemps, collidersNum));
-        if (collidersNum != 0)
-        {
-            // Debug.Log("Destroy");
-            Destroy(o);
-        }
-        else
+        Debug.Log(String.Format("max attempts {0}, collidersNum {1}", maxAttemps, collidersNum));
+        Debug.Log(String.Format("new pos {0}, {1}", o.transform.position.x, o.transform.position.y));
+        if (o)
         {
             o.layer = 0; //ставлю дефолтное значение, делаю видимым
             SpriteRenderer renderer = o.GetComponent<SpriteRenderer>();
             renderer.color = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
             nodes.Add(o);
-        }        
+        }
+    }
+    void AddNode(Vector3 pos, float size)
+    {
+        GameObject o = null;
+        Collider2D[] results = new Collider2D[3];
+        int collidersNum = 0;
+        int maxAttemps = 100; // сколько попыток на окружность делать
+        float r = getSpriteSize(circle);
+        while (true)
+        {
+            /*
+            findNewPosition можно запускать с разным значением угла, проверяя по кругу подходящие места
+            */
+            o = Instantiate(circle, pos + findNewPosition(((r + 0.1f) + size) / 2.0f), Quaternion.identity);
+            Collider2D collider = o.GetComponent<CircleCollider2D>();
+            collidersNum = collider.OverlapCollider(new ContactFilter2D(), results);
+            if (collidersNum != 0)
+            {
+                Destroy(o);
+            }
+            else
+                break;
+            if (maxAttemps-- <= 0)
+                break;
+        }
+        Debug.Log(String.Format("max attempts {0}, collidersNum {1}", maxAttemps, collidersNum));
+        Debug.Log(String.Format("new pos {0}, {1}", o.transform.position.x, o.transform.position.y));
+        if (collidersNum != 0)
+        {
+            Debug.Log("Destroy");
+            // Destroy(o);
+        }
+        // else
+        {
+            o.layer = 0; //ставлю дефолтное значение, делаю видимым
+            SpriteRenderer renderer = o.GetComponent<SpriteRenderer>();
+            renderer.color = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
+            nodes.Add(o);
+        }
     }
 
     void CheckCollisionPoints()
@@ -120,11 +169,15 @@ public class Snake : MonoBehaviour
             {
                 Debug.Log("add node");
                 Vector3 pos = head.transform.position;
+                float size = spriteSize;
                 if (nodes.Count > 0)
                 {
-                    pos = nodes.Last().transform.position;
+                    Debug.Log("from list");
+                    GameObject obj = nodes.Last();
+                    pos = obj.transform.position;
+                    size = getSpriteSize(obj);
                 }
-                AddNode(pos);
+                AddNode2(pos, size);
             }
             if (Input.GetKeyDown("s"))
             {
@@ -151,9 +204,9 @@ public class Snake : MonoBehaviour
         */
         foreach (GameObject o in nodes)
         {
-            t = o.transform.position;
+            // t = o.transform.position;
             // o.transform.position = prev;
-            prev = t;
+            // prev = t;
         }
     }
 }
