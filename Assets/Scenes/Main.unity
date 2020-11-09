@@ -419,7 +419,7 @@ GameObject:
   - component: {fileID: 2135961477}
   - component: {fileID: 2135961478}
   m_Layer: 0
-  m_Name: head
+  m_Name: SnakeHead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -504,7 +504,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   q: 3
-  num: 0
 --- !u!58 &2135961476
 CircleCollider2D:
   m_ObjectHideFlags: 0
