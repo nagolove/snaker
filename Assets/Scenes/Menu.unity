@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 8861834}
   - component: {fileID: 8861833}
   m_Layer: 5
-  m_Name: Button
+  m_Name: AIButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 144196563}
   - component: {fileID: 144196562}
   m_Layer: 5
-  m_Name: Button
+  m_Name: PlayerButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -527,7 +527,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: "\u041E\u0431\u0443\u0447\u0430\u0442\u044C"
 --- !u!222 &1506258606
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -754,7 +754,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: "\u0412\u044B\u0439\u0442\u0438"
 --- !u!222 &1654453323
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -922,7 +922,7 @@ GameObject:
   - component: {fileID: 1877585579}
   - component: {fileID: 1877585578}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ExitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -990,7 +990,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1877585579}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1858485120}
+        m_MethodName: ByeBye
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1877585579
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1097,7 +1108,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: "\u0421\u0430\u043C\u043E\u043E\u0431\u0443\u0447\u0435\u043D\u0438\u0435"
 --- !u!222 &1884703528
 CanvasRenderer:
   m_ObjectHideFlags: 0
