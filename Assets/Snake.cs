@@ -14,10 +14,9 @@ public class Snake : MonoBehaviour
     Vector2 ds, dsOrig;
     public float speed = 10;
     public float q = 3;
-    public int num;
+    public static int num;
     List<GameObject> nodes = new List<GameObject>();
     Vector3 lastPosition;
-    CircleDrawer circleDrawer;
 
     struct Line
     {
@@ -25,7 +24,7 @@ public class Snake : MonoBehaviour
         public Color color;
         public Line(Vector2 from, Vector2 to, Color color)
         {
-            this.from = from;            
+            this.from = from;
             this.to = to;
             this.color = color;
         }
@@ -39,7 +38,7 @@ public class Snake : MonoBehaviour
 
     void DrawLineList()
     {
-        foreach(Line line in lines)
+        foreach (Line line in lines)
         {
             Common.DrawLineGL(line.from, line.to, line.color);
         }
@@ -51,14 +50,14 @@ public class Snake : MonoBehaviour
         DrawLineList();
     }
 
-    void putTextAtPoint(Vector2 p)
+    void putTextAtPoint(Transform trans)
     {
         GameObject ngo = new GameObject("SnakeNumber");
-        ngo.transform.Translate(new Vector3(p.x, p.y, 0));
+        ngo.transform.Translate(trans.position);
         TextMeshPro t = ngo.AddComponent<TextMeshPro>();
-        t.transform.SetParent(transform);
+        t.transform.SetParent(trans);
         t.fontSize = 8;
-        t.text = String.Format("{0}", num);
+        t.text = String.Format("{0}", num++);
         t.alignment = TextAlignmentOptions.Center;
         t.color = Color.black;
     }
@@ -66,11 +65,8 @@ public class Snake : MonoBehaviour
     {
         head = GameObject.Find("head");
         circle = GameObject.Find("circle");
-
         spriteSize = getSpriteSize(head);
-        circleDrawer = GetComponent<CircleDrawer>();
-        // circleDrawer.
-        // putTextAtPoint(new Vector2(transform.position.x, transform.position.y));
+        putTextAtPoint(transform);
     }
     void AddNode(Vector3 pos, float size)
     {
@@ -100,25 +96,10 @@ public class Snake : MonoBehaviour
         if (o)
         {
             o.layer = 0; //ставлю дефолтное значение, делаю видимым
+            putTextAtPoint(o.transform);
             SpriteRenderer renderer = o.GetComponent<SpriteRenderer>();
             renderer.color = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
             nodes.Add(o);
-        }
-    }
-    void CheckCollisionPoints()
-    {
-        Collider2D collider = GetComponent<CircleCollider2D>();
-        ContactPoint2D[] results = new ContactPoint2D[10];
-        Collider2D[] colliders = new Collider2D[10];
-        int pointsNum = collider.OverlapCollider(new ContactFilter2D(), colliders);
-        Debug.Log(String.Format("pointsNum {0}", pointsNum));
-        foreach (Collider2D c in colliders)
-        {
-            Debug.Log(String.Format("collider {0}", c.name));
-        }
-        foreach (ContactPoint2D p in results)
-        {
-            Debug.Log(String.Format("point {0}, {1}", p.point.x, p.point.y));
         }
     }
     void Update()
@@ -138,27 +119,13 @@ public class Snake : MonoBehaviour
         {
             if (Input.GetKeyDown("a"))
             {
-                Debug.Log("add node");
-                Vector3 pos = head.transform.position;
-                float size = spriteSize;
-                if (nodes.Count > 0)
-                {
-                    Debug.Log("from list");
-                    GameObject obj = nodes.Last();
-                    pos = obj.transform.position;
-                    size = getSpriteSize(obj);
-                }
-                AddNode(pos, size);
-            }
-            if (Input.GetKeyDown("s"))
-            {
-                CheckCollisionPoints();
+                Grow();
             }
         }
 
         if (Input.GetKeyDown("r"))
         {
-            SceneManager.LoadScene("Main");
+            // SceneManager.LoadScene("Main");
         }
 
         dsOrig = ds;
@@ -168,11 +135,23 @@ public class Snake : MonoBehaviour
         MoveTail();
     }
 
+    void Grow()
+    {
+        Vector3 pos = head.transform.position;
+        float size = spriteSize;
+        if (nodes.Count > 0)
+        {
+            GameObject obj = nodes.Last();
+            pos = obj.transform.position;
+            size = getSpriteSize(obj);
+        }
+        AddNode(pos, size);
+    }
     void OnCollisionEnter2D(Collision2D collision)
     {
         ContactPoint2D[] points = new ContactPoint2D[collision.contactCount];
         int num = collision.GetContacts(points);
-        foreach(ContactPoint2D point in points)
+        foreach (ContactPoint2D point in points)
         {
             GameObject o = point.otherCollider.gameObject;
             o.transform.position -= new Vector3(point.relativeVelocity.x, point.relativeVelocity.y);
