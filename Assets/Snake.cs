@@ -81,9 +81,8 @@ public class Snake : MonoBehaviour
         for (int i = 0; i < maxAttemps; ++i)
         {
             Vector2 cart = Common.fromPolar(angle, ((r + 0.1f) + size) / 2.0f);
-            Vector3 newPos = new Vector3(cart.x, cart.y, 0);
             angle += dAngle;
-            o = Instantiate(circle, pos + newPos, Quaternion.identity);
+            o = Instantiate(circle, pos + new Vector3(cart.x, cart.y, 0), Quaternion.identity);
             Collider2D collider = o.GetComponent<CircleCollider2D>();
             collidersNum = collider.OverlapCollider(new ContactFilter2D(), results);
             if (collidersNum != 0)
@@ -146,6 +145,7 @@ public class Snake : MonoBehaviour
             pos = obj.transform.position;
             size = getSpriteSize(obj);
         }
+        Debug.Log(String.Format("size {0}", size));
         AddNode(pos, size);
     }
     void OnCollisionEnter2D(Collision2D collision)
