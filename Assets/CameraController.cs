@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -19,12 +20,12 @@ public class CameraController : MonoBehaviour
         if (Input.GetKey("z") && (mainCamera.orthographicSize * (1.0f - scaleConst) > minZoom))
         {
             mainCamera.orthographicSize *= 1.0f - scaleConst;
-            Debug.Log(string.Format("orthographic size {0}", mainCamera.orthographicSize));
+            // Debug.Log(string.Format("orthographic size {0}", mainCamera.orthographicSize));
         }
         if (Input.GetKey("x") && (mainCamera.orthographicSize * (1.0f + scaleConst) < maxZoom))
         {
             mainCamera.orthographicSize *= 1.0f + scaleConst;
-            Debug.Log(string.Format("orthographic size {0}", mainCamera.orthographicSize));
+            // Debug.Log(string.Format("orthographic size {0}", mainCamera.orthographicSize));
         }
 
         if (Input.GetKey(KeyCode.LeftShift))
@@ -37,6 +38,44 @@ public class CameraController : MonoBehaviour
                 transform.Translate(new Vector3(0, -speed * Time.deltaTime));
             if (Input.GetKey("s"))
                 transform.Translate(new Vector3(0, speed * Time.deltaTime));
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log(String.Format("enter with tag {0}", collision.gameObject.tag));
+        Debug.Log(String.Format("enter with name {0}", collision.gameObject.name));
+    }
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        Debug.Log(String.Format("exit with tag {0}", collision.gameObject.tag));
+        Debug.Log(String.Format("exit with name {0}", collision.gameObject.name));
+    }
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        Debug.Log(String.Format("stay with tag {0}", collision.gameObject.tag));
+        Debug.Log(String.Format("stay with name {0}", collision.gameObject.name));
+    }
+    void OnTriggerEnter2D(Collision2D collision)
+    {
+        Debug.Log(String.Format("trig enter with tag {0}", collision.gameObject.tag));
+        Debug.Log(String.Format("trig enter with name {0}", collision.gameObject.name));
+    }
+    void OnTriggerExit2D(Collider2D collision)
+    {
+        Debug.Log(String.Format("trig exit with tag {0}", collision.gameObject.tag));
+        Debug.Log(String.Format("trig exit with name {0}", collision.gameObject.name));
+    }
+    void OnTriggerStay2D(Collider2D collison)
+    {
+        Debug.Log(String.Format("trig stay with tag {0}", collison.gameObject.tag));
+        Debug.Log(String.Format("trig stay with name {0}", collison.gameObject.name));
+        if (collison.gameObject.tag == "Snake")
+        {
+            // Vector3 vec = 
+            // Vector2 relVel = collison.gameObject;
+            // Debug.Log(string.Format("col with {0}", collison.gameObject.name));
+            // transform.Translate(new Vector3(relVel.x, relVel.y));
         }
     }
 }

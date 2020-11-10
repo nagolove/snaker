@@ -12,7 +12,7 @@ public class Snake : MonoBehaviour
     GameObject head, circle;
     float spriteSize;
     Vector3 ds, dsOrig;
-    public float speed = 10;
+    public float speed = 2.0f;
     public float q = 3;
     public static int num;
     public float rotAngle = 2.0f;
@@ -147,9 +147,9 @@ public class Snake : MonoBehaviour
             }
         }
 
-        dsOrig = dir;
+        // dsOrig = dir;
         head.transform.position += dir * speed * Time.deltaTime;
-        ds *= 0.8f;
+        // ds *= 0.8f;
 
         MoveTail();
     }
@@ -180,10 +180,8 @@ public class Snake : MonoBehaviour
     void MoveTail()
     {
         Vector3 prev = transform.position;
-        float dsLen = dsOrig.magnitude;
-        Vector3 diff = lastPosition - transform.position;
-        float diffLen = diff.magnitude;
-        if (diff != Vector3.zero) // может быть неточное сравнение плавающих чисел
+        float dsLen = 1.0f;
+        if (lastPosition - transform.position != Vector3.zero) // может быть неточное сравнение плавающих чисел
         {
             // PushDrawLine(transform.position, transform.position + diff, Color.red);
             foreach (GameObject o in nodes)
