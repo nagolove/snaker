@@ -18,7 +18,7 @@ public class Snake : MonoBehaviour
     Vector3 lastPosition;
     GameObject leftEye, rightEye;
     Boolean speedUp;
-    float   speedUpTime;
+    float speedUpTime;
 
     #region Lines drawing
     struct Line
@@ -129,19 +129,15 @@ public class Snake : MonoBehaviour
     {
         transform.Rotate(0, 0, -rotAngle);
     }
-    void Update()
+
+    Vector3 checkAccelerate(Boolean buttonValue, Vector3 delta)
     {
-        lastPosition = transform.position;
-        Vector3 dir = getEyeDirection();
+        Vector3 newDelta = delta;
 
-        if (Input.GetKey("left")) rotateLeft();
-        if (Input.GetKey("right")) rotateRight();
-
-        Vector3 delta = dir * speed * Time.deltaTime / 10.0f;
-        // cделать нормальное ускорение
-        if (Input.GetKey("up"))
+        if (buttonValue)
         {
-            if (!speedUp) {
+            if (!speedUp)
+            {
                 //init
                 speedUpTime = Time.fixedUnscaledTime;
                 Debug.LogWarning(String.Format("speedUp at time {0}", speedUpTime));
@@ -154,38 +150,44 @@ public class Snake : MonoBehaviour
             if (t < 1.0f)
             {
                 Vector3 maxDelta = delta * 2;
-                delta = Vector3.Lerp(delta, maxDelta, t);
+                newDelta = Vector3.Lerp(delta, maxDelta, t);
                 speedUpTime = now;
             }
             Debug.Log(String.Format("speedup t {0}", t));
-        } else
+        }
+        else
             speedUp = false;
 
-        Debug.Log(String.Format("delta len {0}", delta.magnitude));
+        return newDelta;
+    }
+    void Update()
+    {
+        lastPosition = transform.position;
+        Vector3 dir = getEyeDirection();
+
+        if (Input.GetKey("left")) rotateLeft();
+        if (Input.GetKey("right")) rotateRight();
+
+        Vector3 delta = dir * speed * Time.deltaTime / 10.0f;
+        delta = checkAccelerate(Input.GetKey("up"), delta);
+        // Debug.Log(String.Format("delta len {0}", delta.magnitude));
 
         // следать торможение
-
         /*
         if (Input.GetKey("down"))
             ds = new Vector2(0, -speed * Time.deltaTime);
         */
-
         // checkHeadInCamera();
 
-        if (!Input.GetKey(KeyCode.LeftShift))
+        if (!Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown("a"))
         {
-            if (Input.GetKeyDown("a"))
-            {
-                Grow();
-            }
+            Grow();
         }
 
         // dsOrig = dir;
-
         // Debug.Log(String.Format("Time.deltaTime {0}", Time.deltaTime));
         head.transform.position += delta;
         // ds *= 0.8f;
-
         MoveTail();
     }
 
