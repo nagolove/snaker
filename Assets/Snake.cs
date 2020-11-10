@@ -17,6 +17,8 @@ public class Snake : MonoBehaviour
     List<GameObject> nodes = new List<GameObject>();
     Vector3 lastPosition;
     GameObject leftEye, rightEye;
+    Boolean speedUp;
+    float   speedUpTime;
 
     #region Lines drawing
     struct Line
@@ -135,17 +137,40 @@ public class Snake : MonoBehaviour
         if (Input.GetKey("left")) rotateLeft();
         if (Input.GetKey("right")) rotateRight();
 
+        Vector3 delta = dir * speed * Time.deltaTime / 10.0f;
         // cделать нормальное ускорение
-        // if (Input.GetKey("up"))
-        // dir *= 1.1f;
+        if (Input.GetKey("up"))
+        {
+            if (!speedUp) {
+                //init
+                speedUpTime = Time.fixedUnscaledTime;
+                Debug.LogWarning(String.Format("speedUp at time {0}", speedUpTime));
+            }
+            speedUp = true;
+            float now = Time.fixedUnscaledTime;
+            Debug.Log(String.Format("now time {0}", now));
+            float t = (now - speedUpTime) * 1.0f;
+            // коли не прошло одной секунды - интерполирую
+            if (t < 1.0f)
+            {
+                Vector3 maxDelta = delta * 2;
+                delta = Vector3.Lerp(delta, maxDelta, t);
+                speedUpTime = now;
+            }
+            Debug.Log(String.Format("speedup t {0}", t));
+        } else
+            speedUp = false;
+
+        Debug.Log(String.Format("delta len {0}", delta.magnitude));
 
         // следать торможение
+
         /*
         if (Input.GetKey("down"))
             ds = new Vector2(0, -speed * Time.deltaTime);
         */
 
-        checkHeadInCamera();
+        // checkHeadInCamera();
 
         if (!Input.GetKey(KeyCode.LeftShift))
         {
@@ -156,9 +181,8 @@ public class Snake : MonoBehaviour
         }
 
         // dsOrig = dir;
-        Vector3 delta = dir * speed * Time.deltaTime / 10.0f;
-        Debug.Log(String.Format("Time.deltaTime {0}", Time.deltaTime));
-        Debug.Log(String.Format("delta len {0}", delta.magnitude));
+
+        // Debug.Log(String.Format("Time.deltaTime {0}", Time.deltaTime));
         head.transform.position += delta;
         // ds *= 0.8f;
 
