@@ -17,7 +17,9 @@ public class Snake : MonoBehaviour
     public static int num;
     List<GameObject> nodes = new List<GameObject>();
     Vector3 lastPosition;
+    GameObject leftEye, rightEye;
 
+    #region Lines drawing
     struct Line
     {
         public Vector2 from, to;
@@ -35,6 +37,10 @@ public class Snake : MonoBehaviour
     {
         lines.Add(new Line(from, to, color));
     }
+    void PushDrawLine(Vector3 from, Vector3 to, Color color)
+    {
+        lines.Add(new Line(from, to, color));
+    }
 
     void DrawLineList()
     {
@@ -49,7 +55,17 @@ public class Snake : MonoBehaviour
     {
         DrawLineList();
     }
-
+    #endregion
+    Vector3 getEyeDirection()
+    {
+        Vector3 middle = (leftEye.transform.position - rightEye.transform.position) / 2;
+        Vector2 dir = new Vector2(middle.x, middle.y);
+        dir.x = -dir.x;
+        dir.Normalize();
+        dir *= 10;
+        PushDrawLine(transform.position, transform.position + new Vector3(dir.x, dir.y), Color.red);
+        return dir;
+    }
     void putTextAtPoint(Transform trans)
     {
         GameObject ngo = new GameObject("SnakeNumber");
@@ -68,6 +84,8 @@ public class Snake : MonoBehaviour
         // circle = GameObject.Find("circle");
         spriteSize = getSpriteSize(head);
         putTextAtPoint(transform);
+        leftEye = head.transform.Find("eye_l").gameObject;
+        rightEye = head.transform.Find("eye_r").gameObject;
     }
     void AddNode(Vector3 pos, float size)
     {
