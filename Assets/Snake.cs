@@ -11,10 +11,11 @@ public class Snake : MonoBehaviour
 {
     GameObject head, circle;
     float spriteSize;
-    Vector2 ds, dsOrig;
+    Vector3 ds, dsOrig;
     public float speed = 10;
     public float q = 3;
     public static int num;
+    public float rotAngle = 2.0f;
     List<GameObject> nodes = new List<GameObject>();
     Vector3 lastPosition;
     GameObject leftEye, rightEye;
@@ -58,13 +59,11 @@ public class Snake : MonoBehaviour
     #endregion
     Vector3 getEyeDirection()
     {
-        Vector3 middle = (leftEye.transform.position - rightEye.transform.position) / 2;
-        Vector2 dir = new Vector2(middle.x, middle.y);
-        dir.x = -dir.x;
-        dir.Normalize();
-        dir *= 10;
-        PushDrawLine(transform.position, transform.position + new Vector3(dir.x, dir.y), Color.red);
-        return dir;
+        Vector3 n = (rightEye.transform.position - leftEye.transform.position);
+        Vector2 k = new Vector2(n.x, n.y);
+        k = - Vector2.Perpendicular(k).normalized;
+        PushDrawLine(transform.position, transform.position + (new Vector3(k.x, k.y)) * 5.0f, Color.red);
+        return new Vector3(k.x, k.y);
     }
     void putTextAtPoint(Transform trans)
     {
@@ -123,17 +122,22 @@ public class Snake : MonoBehaviour
     void Update()
     {
         lastPosition = transform.position;
+        Vector3 dir = getEyeDirection();
 
         if (Input.GetKey("left"))
-            ds = new Vector2(-speed * Time.deltaTime, 0);
+            transform.Rotate(0, 0, -rotAngle);
         if (Input.GetKey("right"))
-            ds = new Vector2(speed * Time.deltaTime, 0);
-        if (Input.GetKey("up"))
-            ds = new Vector2(0, speed * Time.deltaTime);
+            transform.Rotate(0, 0, rotAngle);
+        
+        // cделать нормальное ускорение
+        // if (Input.GetKey("up"))
+            // dir *= 1.1f;
+
+        // следать торможение
+        /*
         if (Input.GetKey("down"))
             ds = new Vector2(0, -speed * Time.deltaTime);
-        
-        getEyeDirection();
+        */
 
         if (!Input.GetKey(KeyCode.LeftShift))
         {
@@ -143,13 +147,8 @@ public class Snake : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown("r"))
-        {
-            // SceneManager.LoadScene("Main");
-        }
-
-        dsOrig = ds;
-        head.transform.position += new Vector3(ds.x, ds.y, 0);
+        dsOrig = dir;
+        head.transform.position += dir * speed * Time.deltaTime;
         ds *= 0.8f;
 
         MoveTail();
