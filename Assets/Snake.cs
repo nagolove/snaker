@@ -11,9 +11,7 @@ public class Snake : MonoBehaviour
 {
     GameObject head, circle;
     float spriteSize;
-    Vector3 ds, dsOrig;
-    public float speed = 2.0f;
-    public float q = 3;
+    public float speed = 1.0f;
     public static int num;
     public float rotAngle = 2.0f;
     List<GameObject> nodes = new List<GameObject>();
@@ -158,7 +156,10 @@ public class Snake : MonoBehaviour
         }
 
         // dsOrig = dir;
-        head.transform.position += dir * speed * Time.deltaTime;
+        Vector3 delta = dir * speed * Time.deltaTime / 10.0f;
+        Debug.Log(String.Format("Time.deltaTime {0}", Time.deltaTime));
+        Debug.Log(String.Format("delta len {0}", delta.magnitude));
+        head.transform.position += delta;
         // ds *= 0.8f;
 
         MoveTail();
@@ -174,6 +175,7 @@ public class Snake : MonoBehaviour
         Debug.Log(String.Format("w*h {0},{1}", cam.pixelWidth, cam.pixelHeight));
         Debug.Log(String.Format("ortho {0}", cam.orthographicSize));
         Debug.Log(String.Format("scale {0}, {1}, {2}", cam.transform.localScale.x, cam.transform.localScale.y, cam.transform.localScale.z));
+        Debug.Log(String.Format("w*h {0}, {0}", Screen.width, Screen.height));
         Debug.Log(String.Format("d {0}", d2.magnitude));
     }
 
