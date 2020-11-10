@@ -56,7 +56,7 @@ public class CameraController : MonoBehaviour
         Debug.Log(String.Format("stay with tag {0}", collision.gameObject.tag));
         Debug.Log(String.Format("stay with name {0}", collision.gameObject.name));
     }
-    void OnTriggerEnter2D(Collision2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log(String.Format("trig enter with tag {0}", collision.gameObject.tag));
         Debug.Log(String.Format("trig enter with name {0}", collision.gameObject.name));

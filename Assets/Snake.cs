@@ -61,7 +61,7 @@ public class Snake : MonoBehaviour
     {
         Vector3 n = (rightEye.transform.position - leftEye.transform.position);
         Vector2 k = new Vector2(n.x, n.y);
-        k = - Vector2.Perpendicular(k).normalized;
+        k = -Vector2.Perpendicular(k).normalized;
         PushDrawLine(transform.position, transform.position + (new Vector3(k.x, k.y)) * 5.0f, Color.red);
         return new Vector3(k.x, k.y);
     }
@@ -119,25 +119,35 @@ public class Snake : MonoBehaviour
             nodes.Add(o);
         }
     }
+
+    void rotateLeft()
+    {
+        transform.Rotate(0, 0, rotAngle);
+    }
+
+    void rotateRight()
+    {
+        transform.Rotate(0, 0, -rotAngle);
+    }
     void Update()
     {
         lastPosition = transform.position;
         Vector3 dir = getEyeDirection();
 
-        if (Input.GetKey("left"))
-            transform.Rotate(0, 0, -rotAngle);
-        if (Input.GetKey("right"))
-            transform.Rotate(0, 0, rotAngle);
-        
+        if (Input.GetKey("left")) rotateLeft();
+        if (Input.GetKey("right")) rotateRight();
+
         // cделать нормальное ускорение
         // if (Input.GetKey("up"))
-            // dir *= 1.1f;
+        // dir *= 1.1f;
 
         // следать торможение
         /*
         if (Input.GetKey("down"))
             ds = new Vector2(0, -speed * Time.deltaTime);
         */
+
+        checkHeadInCamera();
 
         if (!Input.GetKey(KeyCode.LeftShift))
         {
@@ -152,6 +162,19 @@ public class Snake : MonoBehaviour
         // ds *= 0.8f;
 
         MoveTail();
+    }
+
+    void checkHeadInCamera()
+    {
+        Vector3 d = transform.position - Camera.main.transform.position;
+        Vector2 d2 = new Vector2(d.x, d.y);
+        float len = d2.magnitude;
+        Camera cam = Camera.main;
+        Debug.Log(String.Format("scaled w*h {0},{1}", cam.scaledPixelWidth, cam.scaledPixelWidth));
+        Debug.Log(String.Format("w*h {0},{1}", cam.pixelWidth, cam.pixelHeight));
+        Debug.Log(String.Format("ortho {0}", cam.orthographicSize));
+        Debug.Log(String.Format("scale {0}, {1}, {2}", cam.transform.localScale.x, cam.transform.localScale.y, cam.transform.localScale.z));
+        Debug.Log(String.Format("d {0}", d2.magnitude));
     }
 
     void Grow()
