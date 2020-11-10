@@ -132,6 +132,8 @@ public class Snake : MonoBehaviour
             ds = new Vector2(0, speed * Time.deltaTime);
         if (Input.GetKey("down"))
             ds = new Vector2(0, -speed * Time.deltaTime);
+        
+        getEyeDirection();
 
         if (!Input.GetKey(KeyCode.LeftShift))
         {
