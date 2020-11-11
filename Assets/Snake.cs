@@ -21,6 +21,7 @@ public class Snake : MonoBehaviour
     float speedUpTime;
     public float maxSpeedUp = 7; // во сколько раз вырастет скорость максимум
     public float speedUpAccelerationTime = 1.0f; // время разгона в секундах
+    Vector3 delta;
 
     #region Lines drawing
     struct Line
@@ -129,7 +130,7 @@ public class Snake : MonoBehaviour
         if (Input.GetKey("left")) rotateLeft();
         if (Input.GetKey("right")) rotateRight();
 
-        Vector3 delta = dir * speed * Time.deltaTime / 10.0f;
+        delta = dir * speed * Time.deltaTime / 10.0f;
         delta = checkAccelerate(Input.GetKey("up"), delta);
         // сделать торможение
         /*
@@ -143,10 +144,7 @@ public class Snake : MonoBehaviour
             Grow();
         }
 
-        // dsOrig = dir;
-        // Debug.Log(String.Format("Time.deltaTime {0}", Time.deltaTime));
         head.transform.position += delta;
-        // ds *= 0.8f;
         MoveTail();
     }
 
@@ -156,12 +154,27 @@ public class Snake : MonoBehaviour
         Vector2 d2 = new Vector2(d.x, d.y);
         float len = d2.magnitude;
         Camera cam = Camera.main;
+        Debug.Log(String.Format("pixelRect x,y,w,h {0},{1},{2},{3}",
+            cam.pixelRect.x, cam.pixelRect.y, cam.pixelRect.width, cam.pixelRect.height));
+        Debug.Log(String.Format("rect x,y,w,h {0},{1},{2},{3}",
+            cam.rect.x, cam.rect.y, cam.rect.width, cam.rect.height));
         Debug.Log(String.Format("scaled w*h {0},{1}", cam.scaledPixelWidth, cam.scaledPixelWidth));
         Debug.Log(String.Format("w*h {0},{1}", cam.pixelWidth, cam.pixelHeight));
         Debug.Log(String.Format("ortho {0}", cam.orthographicSize));
         Debug.Log(String.Format("scale {0}, {1}, {2}", cam.transform.localScale.x, cam.transform.localScale.y, cam.transform.localScale.z));
         Debug.Log(String.Format("w*h {0}, {0}", Screen.width, Screen.height));
         Debug.Log(String.Format("d {0}", d2.magnitude));
+        
+        Vector2 worldUnitsInCamera;
+        worldUnitsInCamera.y = cam.orthographicSize * 2;
+        worldUnitsInCamera.x = worldUnitsInCamera.y * Screen.width / Screen.height;
+
+        Vector2 worldToPixelAmount;
+        worldToPixelAmount.x = Screen.width / worldUnitsInCamera.x;
+        worldToPixelAmount.y = Screen.height / worldUnitsInCamera.y;
+        Debug.Log(String.Format("amount {0}, {1}", worldToPixelAmount.x, worldToPixelAmount.y));
+        Vector2 pixelDist = worldToPixelAmount * len;
+        Debug.Log(String.Format("pixelDist {0}, {1}", pixelDist.x, pixelDist.y));
     }
 
     void Grow()
@@ -190,18 +203,14 @@ public class Snake : MonoBehaviour
     void MoveTail()
     {
         Vector3 prev = transform.position;
-        float dsLen = 1.0f;
         if (lastPosition - transform.position != Vector3.zero) // может быть неточное сравнение плавающих чисел
         {
             // PushDrawLine(transform.position, transform.position + diff, Color.red);
             foreach (GameObject o in nodes)
             {
                 Vector3 t = o.transform.position;
-                Vector3 dir = prev - o.transform.position;
-                dir = Vector3.ClampMagnitude(dir, dsLen);
                 // PushDrawLine(o.transform.position, o.transform.position + dir, Color.red);
-                float len = (lastPosition - o.transform.position).magnitude;
-                o.transform.position += dir;
+                o.transform.position += Vector3.ClampMagnitude(prev - o.transform.position, delta.magnitude);
                 prev = t;
             }
         }

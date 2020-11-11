@@ -1024,6 +1024,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   rotAngle: 2
+  maxSpeedUp: 11.45
+  speedUpAccelerationTime: 7.99
 --- !u!58 &2135961476
 CircleCollider2D:
   m_ObjectHideFlags: 0
