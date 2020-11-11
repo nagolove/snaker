@@ -19,6 +19,8 @@ public class Snake : MonoBehaviour
     GameObject leftEye, rightEye;
     Boolean speedUp;
     float speedUpTime;
+    public float maxSpeedUp = 7; // во сколько раз вырастет скорость максимум
+    public float speedUpAccelerationTime = 1.0f; // время разгона в секундах
 
     #region Lines drawing
     struct Line
@@ -86,40 +88,6 @@ public class Snake : MonoBehaviour
         leftEye = head.transform.Find("eye_l").gameObject;
         rightEye = head.transform.Find("eye_r").gameObject;
     }
-    void AddNode(Vector3 pos, float size)
-    {
-        GameObject o = null;
-        Collider2D[] results = new Collider2D[10];
-        int collidersNum = 0;
-        int maxAttemps = 50; // сколько попыток на окружность делать
-        float r = getSpriteSize(circle);
-        float angle = 0.0f;
-        float dAngle = (float)Math.PI * 2.0f / maxAttemps;
-        for (int i = 0; i < maxAttemps; ++i)
-        {
-            Vector2 cart = Common.fromPolar(angle, ((r + 0.1f) + size) / 2.0f);
-            angle += dAngle;
-            o = Instantiate(circle, pos + new Vector3(cart.x, cart.y, 0), Quaternion.identity);
-            Collider2D collider = o.GetComponent<CircleCollider2D>();
-            collidersNum = collider.OverlapCollider(new ContactFilter2D(), results);
-            if (collidersNum != 0)
-            {
-                Destroy(o);
-                o = null;
-            }
-            else
-                break;
-        }
-        if (o)
-        {
-            o.layer = 0; //ставлю дефолтное значение, делаю видимым
-            putTextAtPoint(o.transform);
-            SpriteRenderer renderer = o.GetComponent<SpriteRenderer>();
-            renderer.color = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
-            nodes.Add(o);
-        }
-    }
-
     void rotateLeft()
     {
         transform.Rotate(0, 0, rotAngle);
@@ -133,31 +101,24 @@ public class Snake : MonoBehaviour
     Vector3 checkAccelerate(Boolean buttonValue, Vector3 delta)
     {
         Vector3 newDelta = delta;
-
         if (buttonValue)
         {
             if (!speedUp)
             {
                 //init
-                speedUpTime = Time.fixedUnscaledTime;
+                speedUpTime = Time.realtimeSinceStartup;
                 Debug.LogWarning(String.Format("speedUp at time {0}", speedUpTime));
+                speedUp = true;
             }
-            speedUp = true;
-            float now = Time.fixedUnscaledTime;
-            Debug.Log(String.Format("now time {0}", now));
-            float t = (now - speedUpTime) * 1.0f;
+            float t = Time.realtimeSinceStartup - speedUpTime;
             // коли не прошло одной секунды - интерполирую
-            if (t < 1.0f)
-            {
-                Vector3 maxDelta = delta * 2;
-                newDelta = Vector3.Lerp(delta, maxDelta, t);
-                speedUpTime = now;
-            }
-            Debug.Log(String.Format("speedup t {0}", t));
+            if (t < speedUpAccelerationTime)
+                newDelta = Vector3.Lerp(delta, delta * maxSpeedUp, t);
+            else
+                newDelta *= maxSpeedUp;
         }
         else
             speedUp = false;
-
         return newDelta;
     }
     void Update()
@@ -170,14 +131,12 @@ public class Snake : MonoBehaviour
 
         Vector3 delta = dir * speed * Time.deltaTime / 10.0f;
         delta = checkAccelerate(Input.GetKey("up"), delta);
-        // Debug.Log(String.Format("delta len {0}", delta.magnitude));
-
-        // следать торможение
+        // сделать торможение
         /*
         if (Input.GetKey("down"))
             ds = new Vector2(0, -speed * Time.deltaTime);
         */
-        // checkHeadInCamera();
+        checkHeadInCamera();
 
         if (!Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown("a"))
         {
@@ -247,4 +206,38 @@ public class Snake : MonoBehaviour
             }
         }
     }
+    void AddNode(Vector3 pos, float size)
+    {
+        GameObject o = null;
+        Collider2D[] results = new Collider2D[10];
+        int collidersNum = 0;
+        int maxAttemps = 50; // сколько попыток на окружность делать
+        float r = getSpriteSize(circle);
+        float angle = 0.0f;
+        float dAngle = (float)Math.PI * 2.0f / maxAttemps;
+        for (int i = 0; i < maxAttemps; ++i)
+        {
+            Vector2 cart = Common.fromPolar(angle, ((r + 0.1f) + size) / 2.0f);
+            angle += dAngle;
+            o = Instantiate(circle, pos + new Vector3(cart.x, cart.y, 0), Quaternion.identity);
+            Collider2D collider = o.GetComponent<CircleCollider2D>();
+            collidersNum = collider.OverlapCollider(new ContactFilter2D(), results);
+            if (collidersNum != 0)
+            {
+                Destroy(o);
+                o = null;
+            }
+            else
+                break;
+        }
+        if (o)
+        {
+            o.layer = 0; //ставлю дефолтное значение, делаю видимым
+            putTextAtPoint(o.transform);
+            SpriteRenderer renderer = o.GetComponent<SpriteRenderer>();
+            renderer.color = new Color(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), 1.0f);
+            nodes.Add(o);
+        }
+    }
+
 }
