@@ -164,7 +164,7 @@ public class Snake : MonoBehaviour
         Debug.Log(String.Format("scale {0}, {1}, {2}", cam.transform.localScale.x, cam.transform.localScale.y, cam.transform.localScale.z));
         Debug.Log(String.Format("w*h {0}, {0}", Screen.width, Screen.height));
         Debug.Log(String.Format("d {0}", d2.magnitude));
-        
+
         Vector2 worldUnitsInCamera;
         worldUnitsInCamera.y = cam.orthographicSize * 2;
         worldUnitsInCamera.x = worldUnitsInCamera.y * Screen.width / Screen.height;
@@ -175,6 +175,26 @@ public class Snake : MonoBehaviour
         Debug.Log(String.Format("amount {0}, {1}", worldToPixelAmount.x, worldToPixelAmount.y));
         Vector2 pixelDist = worldToPixelAmount * len;
         Debug.Log(String.Format("pixelDist {0}, {1}", pixelDist.x, pixelDist.y));
+
+        float outer = 1.2f;
+        float extra = 100.0f;
+        if (d.x > 0 && pixelDist.x * outer >= Screen.width / 2)
+        {
+            cam.transform.Translate(new Vector3(delta.x * extra * Time.deltaTime, 0, 0));
+        }        
+        if (d.x < 0 && pixelDist.x * outer >= Screen.width / 2)
+        {
+            cam.transform.Translate(new Vector3(-delta.x * extra * Time.deltaTime, 0, 0));
+        }
+        if (d.y > 0 && pixelDist.x * outer >= Screen.height / 2)
+        {
+            cam.transform.Translate(new Vector3(0, delta.x * extra * Time.deltaTime, 0));
+        }
+        if (d.y < 0 && pixelDist.x * outer >= Screen.height / 2)
+        {
+            cam.transform.Translate(new Vector3(0, -delta.x * extra * Time.deltaTime, 0));
+        }
+
     }
 
     void Grow()
