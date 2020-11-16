@@ -62,4 +62,10 @@ public class Common : MonoBehaviour
         return (spr.bounds.max - spr.bounds.min).x;
     }
 
+    public static Vector3 Bezier3PathCalculation(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float t) =>
+        Mathf.Pow(1.0f - t, 3) * p0 + 3.0f * Mathf.Pow(1.0f - t, 2) * t * p1 +
+            3.0f * (1.0f - t) * Mathf.Pow(t, 2) * p2 + Mathf.Pow(t, 3) * p3;
+
+    public static Vector3 Bezier2PathCalculation(Vector3 p0, Vector3 p1, Vector3 p2, float t) =>
+        Mathf.Pow(1 - t, 2) * p0 + 2 * t * (1 - t) * p1 + Mathf.Pow(t, 2) * p2;
 }
