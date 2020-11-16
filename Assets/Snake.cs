@@ -150,10 +150,15 @@ public class Snake : MonoBehaviour
 
     void checkHeadInCamera()
     {
+        /*
+        Тут много отладочного дерьма.
+        Должна быть плавная прокрутка камеры если голова змеи слишком близко к краю экрана.
+        */
         Vector3 d = transform.position - Camera.main.transform.position;
         Vector2 d2 = new Vector2(d.x, d.y);
         float len = d2.magnitude;
         Camera cam = Camera.main;
+        
         Debug.Log(String.Format("pixelRect x,y,w,h {0},{1},{2},{3}",
             cam.pixelRect.x, cam.pixelRect.y, cam.pixelRect.width, cam.pixelRect.height));
         Debug.Log(String.Format("rect x,y,w,h {0},{1},{2},{3}",
