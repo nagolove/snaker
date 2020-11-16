@@ -88,13 +88,14 @@ public class Snake : MonoBehaviour
         putTextAtPoint(transform);
         leftEye = head.transform.Find("eye_l").gameObject;
         rightEye = head.transform.Find("eye_r").gameObject;
+        isAccelerated = false;
     }
-    void rotateLeft()
+    public void rotateLeft()
     {
         transform.Rotate(0, 0, rotAngle);
     }
 
-    void rotateRight()
+    public void rotateRight()
     {
         transform.Rotate(0, 0, -rotAngle);
     }
@@ -122,30 +123,25 @@ public class Snake : MonoBehaviour
             speedUp = false;
         return newDelta;
     }
+
+    bool isAccelerated;
+    public void accelerate()
+    {
+        isAccelerated = true;
+    }
     void Update()
     {
         lastPosition = transform.position;
-        Vector3 dir = getEyeDirection();
-
-        if (Input.GetKey("left")) rotateLeft();
-        if (Input.GetKey("right")) rotateRight();
-
-        delta = dir * speed * Time.deltaTime / 10.0f;
-        delta = checkAccelerate(Input.GetKey("up"), delta);
+        delta = getEyeDirection() * speed * Time.deltaTime / 10.0f;
+        // delta = checkAccelerate(Input.GetKey("up"), delta);
+        delta = checkAccelerate(isAccelerated, delta);
         // сделать торможение
-        /*
-        if (Input.GetKey("down"))
-            ds = new Vector2(0, -speed * Time.deltaTime);
-        */
         checkHeadInCamera();
-
-        if (!Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown("a"))
-        {
-            Grow();
-        }
 
         head.transform.position += delta;
         MoveTail();
+
+        isAccelerated = false;
     }
 
     void checkHeadInCamera()
@@ -202,7 +198,7 @@ public class Snake : MonoBehaviour
 
     }
 
-    void Grow()
+    public void grow()
     {
         Vector3 pos = head.transform.position;
         float size = spriteSize;
