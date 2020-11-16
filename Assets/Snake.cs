@@ -83,7 +83,6 @@ public class Snake : MonoBehaviour
     {
         head = GameObject.Find("SnakeHead");
         circle = head.transform.Find("circle").gameObject;
-        // circle = GameObject.Find("circle");
         spriteSize = getSpriteSize(head);
         putTextAtPoint(transform);
         leftEye = head.transform.Find("eye_l").gameObject;
@@ -137,10 +136,8 @@ public class Snake : MonoBehaviour
         delta = checkAccelerate(isAccelerated, delta);
         // сделать торможение
         checkHeadInCamera();
-
         head.transform.position += delta;
         MoveTail();
-
         isAccelerated = false;
     }
 

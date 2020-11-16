@@ -20,6 +20,6 @@ public class SnakeKeyboardMovement : MonoBehaviour
         {
             snake.grow();
         }
-        if (Input.GetKey("a")) snake.accelerate();
+        if (Input.GetKey("up")) snake.accelerate();
     }
 }
