@@ -21,31 +21,16 @@ public class ViewOrthographicCameraBounds : MonoBehaviour
     }
     void OnRenderObject()
     {
-        Vector2 worldUnitsInCamera;
-        worldUnitsInCamera.y = cam.orthographicSize * 2;
-        worldUnitsInCamera.x = worldUnitsInCamera.y * Screen.width / Screen.height;
+        /*
+        Vector2 sz = new Vector2(cam.orthographicSize * ((float)Screen.width / (float)Screen.height), cam.orthographicSize);
+        sz *= 0.99f;
+        Vector3 pos = transform.position;
+        lineDrawer.PushLine(pos - new Vector3(-sz.x, -sz.y, 0), pos - new Vector3(sz.x, -sz.y, 0), Color.green); // top
+        lineDrawer.PushLine(pos - new Vector3(-sz.x, sz.y, 0), pos - new Vector3(sz.x, sz.y, 0), Color.green); // bottom
 
-        Vector2 w2pix;
-        w2pix.x = Screen.width / (1.0f / worldUnitsInCamera.x);
-        w2pix.y = Screen.height / (1.0f / worldUnitsInCamera.y);
-
-        LogOnce("worldToPixelAmount {0}, {1}", w2pix.x, w2pix.y);
-        Vector2 sz = new Vector2(cam.orthographicSize, cam.orthographicSize * ((float)Screen.width / (float)Screen.height));
-        Debug.Log(string.Format("sz {0},{1}", sz.x, sz.y));
-        
-        // float size = cam.orthographicSize * 0.9f;
-        sz *= 0.9f;
-
-        lineDrawer.PushLine(new Vector3(-sz.x, -sz.y, 0), new Vector3(sz.x, -sz.y, 0), Color.green); // top
-        lineDrawer.PushLine(new Vector3(-sz.x, sz.y, 0), new Vector3(sz.x, sz.y, 0), Color.green); // bottom
-
-        lineDrawer.PushLine(new Vector3(0,0, 0), new Vector3(sz.x, -sz.y, 0), Color.green); // top
-        lineDrawer.PushLine(new Vector3(0, 0, 0), new Vector3(sz.x, sz.y, 0), Color.green); // bottom
-
-        lineDrawer.PushLine(new Vector3(-sz.x, -sz.y, 0), new Vector3(-sz.x, sz.y, 0), Color.green); // left
-        lineDrawer.PushLine(new Vector3(sz.x, -sz.y, 0), new Vector3(sz.x, sz.y, 0), Color.green); // right
-
-
+        lineDrawer.PushLine(pos - new Vector3(-sz.x, -sz.y, 0), pos - new Vector3(-sz.x, sz.y, 0), Color.green); // left
+        lineDrawer.PushLine(pos - new Vector3(sz.x, -sz.y, 0), pos - new Vector3(sz.x, sz.y, 0), Color.green); // right
         lineDrawer.DrawList();
+        */
     }
 }
