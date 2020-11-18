@@ -10,33 +10,12 @@ public class CameraController : MonoBehaviour
     public float speed = 10.0f;
     public float minZoom, maxZoom;
     public float scaleConst = 0.1f;
-    public Rect bound, headBound; // границы камеры и уменьшенные границы камеры для передвижения камеры вслед за головой.
     LineDrawer lineDrawer = new LineDrawer();
-
-
-    GameObject circle1, circle2;
+    public Vector3 leftTop, rightBottom, sz; // sz - размеры камеры в юнитах
 
     void Start()
     {
         mainCamera = Camera.main;
-
-        GameObject testCircle = GameObject.Find("testCircle");
-        if (!testCircle)
-        {
-            Debug.LogWarning("not found");
-        }
-        else
-        {
-            Debug.LogWarning("found");
-        }
-        circle1 = Instantiate(testCircle);
-        circle1.layer = 0;
-        circle1.GetComponent<SpriteRenderer>().color = Color.yellow;
-
-        circle2 = Instantiate(testCircle);
-        circle2.layer = 0;
-        circle2.GetComponent<SpriteRenderer>().color = Color.red;
-
         updateBoundsRect();
     }
 
@@ -44,17 +23,8 @@ public class CameraController : MonoBehaviour
     {
         Vector3 sz = new Vector3(mainCamera.orthographicSize * ((float)Screen.width / (float)Screen.height),
             mainCamera.orthographicSize, 0);
-        // Vector2 pos = transform.position;
-        Vector3 pos = transform.position;
-        Vector3 leftUp = pos - new Vector3(sz.x, -sz.y, 0);
-        Vector3 rightDown = pos - new Vector3(-sz.x, sz.y, 0);
-
-        bound.Set(leftUp.x, leftUp.y, Math.Abs(leftUp.x - rightDown.x), Math.Abs(leftUp.y - rightDown.y));
-
-        Debug.Log(String.Format("w {}, h {}", Math.Abs(leftUp.x - rightDown.x), Math.Abs(leftUp.y - rightDown.y)));
-
-        circle1.transform.SetPositionAndRotation(leftUp, Quaternion.identity);
-        circle2.transform.SetPositionAndRotation(rightDown, Quaternion.identity);
+        leftTop = transform.position - new Vector3(sz.x, -sz.y, 0);
+        rightBottom = transform.position - new Vector3(-sz.x, sz.y, 0);
     }
 
     void Update()
@@ -87,21 +57,6 @@ public class CameraController : MonoBehaviour
 
     void OnRenderObject()
     {
-        Vector2 min = bound.min;
-        Vector2 max = bound.max;
-        lineDrawer.PushRect(bound, Color.yellow);
-        Debug.Log(String.Format("min {0}, {1} max {0}, {1}", min.x, min.y, max.x, max.y));
-
-        lineDrawer.PushLine(min, max, Color.blue); // top
-        lineDrawer.PushLine(max, min, Color.white); // top
-
-        // lineDrawer.PushLine(pos - new Vector3(-sz.x, sz.y, 0), pos - new Vector3(sz.x, sz.y, 0), Color.green); // bottom
-
-        // lineDrawer.PushLine(pos - new Vector3(-sz.x, -sz.y, 0), pos - new Vector3(-sz.x, sz.y, 0), Color.green); // left
-        // lineDrawer.PushLine(pos - new Vector3(sz.x, -sz.y, 0), pos - new Vector3(sz.x, sz.y, 0), Color.green); // right
-
-        Vector2 sz = new Vector2(mainCamera.orthographicSize * ((float)Screen.width / (float)Screen.height), mainCamera.orthographicSize);
-        sz *= 0.9f;
         Vector3 pos = transform.position;
         lineDrawer.PushLine(pos - new Vector3(-sz.x, -sz.y, 0), pos - new Vector3(sz.x, -sz.y, 0), Color.green); // top
         lineDrawer.PushLine(pos - new Vector3(-sz.x, sz.y, 0), pos - new Vector3(sz.x, sz.y, 0), Color.green); // bottom
