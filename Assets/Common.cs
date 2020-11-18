@@ -15,8 +15,6 @@ public class Common : MonoBehaviour
             length = len;
         }
     }
-
-    public static Texture2D lineTex;
     public static Polar toPolar(Vector2 v)
     {
         Polar p;
@@ -68,4 +66,37 @@ public class Common : MonoBehaviour
 
     public static Vector3 Bezier2PathCalculation(Vector3 p0, Vector3 p1, Vector3 p2, float t) =>
         Mathf.Pow(1 - t, 2) * p0 + 2 * t * (1 - t) * p1 + Mathf.Pow(t, 2) * p2;
+
+    public class LineDrawer
+    {
+        struct Line
+        {
+            public Vector2 from, to;
+            public Color color;
+            public Line(Vector2 from, Vector2 to, Color color)
+            {
+                this.from = from;
+                this.to = to;
+                this.color = color;
+            }
+        }
+        List<Line> lines = new List<Line>();
+
+        public void PushLine(Vector2 from, Vector2 to, Color color)
+        {
+            lines.Add(new Line(from, to, color));
+        }
+        public void PushLine(Vector3 from, Vector3 to, Color color)
+        {
+            lines.Add(new Line(from, to, color));
+        }
+        public void DrawList()
+        {
+            foreach (Line line in lines)
+            {
+                Common.DrawLineGL(line.from, line.to, line.color);
+            }
+            lines.Clear();
+        }
+    }
 }

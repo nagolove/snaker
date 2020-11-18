@@ -22,50 +22,17 @@ public class Snake : MonoBehaviour
     public float maxSpeedUp = 7; // во сколько раз вырастет скорость максимум
     public float speedUpAccelerationTime = 1.0f; // время разгона в секундах
     Vector3 delta;
-
-    #region Lines drawing
-    struct Line
-    {
-        public Vector2 from, to;
-        public Color color;
-        public Line(Vector2 from, Vector2 to, Color color)
-        {
-            this.from = from;
-            this.to = to;
-            this.color = color;
-        }
-    }
-    List<Line> lines = new List<Line>();
-
-    void PushDrawLine(Vector2 from, Vector2 to, Color color)
-    {
-        lines.Add(new Line(from, to, color));
-    }
-    void PushDrawLine(Vector3 from, Vector3 to, Color color)
-    {
-        lines.Add(new Line(from, to, color));
-    }
-
-    void DrawLineList()
-    {
-        foreach (Line line in lines)
-        {
-            Common.DrawLineGL(line.from, line.to, line.color);
-        }
-        lines.Clear();
-    }
-
+    LineDrawer lineDrawer = new LineDrawer();    
     void OnRenderObject()
     {
-        DrawLineList();
-    }
-    #endregion
+        lineDrawer.DrawList();
+    }    
     Vector3 getEyeDirection()
     {
         Vector3 n = (rightEye.transform.position - leftEye.transform.position);
         Vector2 k = new Vector2(n.x, n.y);
         k = -Vector2.Perpendicular(k).normalized;
-        PushDrawLine(transform.position, transform.position + (new Vector3(k.x, k.y)) * 5.0f, Color.red);
+        lineDrawer.PushLine(transform.position, transform.position + (new Vector3(k.x, k.y)) * 5.0f, Color.red);
         return new Vector3(k.x, k.y);
     }
     void putTextAtPoint(Transform trans)

@@ -620,6 +620,7 @@ GameObject:
   - component: {fileID: 1514840847}
   - component: {fileID: 1514840846}
   - component: {fileID: 1514840849}
+  - component: {fileID: 1514840851}
   - component: {fileID: 1514840850}
   m_Layer: 0
   m_Name: Main Camera
@@ -735,6 +736,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1514840851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514840845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b430b1a6772833699f80fc41bab360c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1626228103
 GameObject:
   m_ObjectHideFlags: 0
