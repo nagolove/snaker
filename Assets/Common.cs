@@ -91,6 +91,13 @@ public class Common : MonoBehaviour
         {
             lines.Add(new Line(from, to, color));
         }
+        public void PushRect(Rect r, Color color)
+        {
+            lines.Add(new Line(new Vector2(r.x, r.y), new Vector2(r.x + r.width, r.y), color));
+            lines.Add(new Line(new Vector2(r.x + r.width, r.y), new Vector2(r.x + r.width, r.y + r.height), color));
+            lines.Add(new Line(new Vector2(r.x + r.width, r.y + r.height), new Vector2(r.x, r.y + r.height), color));
+            lines.Add(new Line(new Vector2(r.x, r.y + r.height), new Vector2(r.x, r.y), color));
+        }
         public void DrawList()
         {
             foreach (Line line in lines)
@@ -105,7 +112,7 @@ public class Common : MonoBehaviour
     public static void LogOnce(string format, params object[] args)
     {
         string formatted = String.Format(format, args);
-        if (!logged.Contains(formatted)) 
+        if (!logged.Contains(formatted))
         {
             Debug.Log(formatted);
             logged.Add(formatted);

@@ -48,10 +48,13 @@ public class CameraController : MonoBehaviour
         Vector3 pos = transform.position;
         Vector3 leftUp = pos - new Vector3(sz.x, -sz.y, 0);
         Vector3 rightDown = pos - new Vector3(-sz.x, sz.y, 0);
+
         bound.Set(leftUp.x, leftUp.y, Math.Abs(leftUp.x - rightDown.x), Math.Abs(leftUp.y - rightDown.y));
 
-        circle1.transform.position = leftUp;
-        circle2.transform.position = rightDown;
+        Debug.Log(String.Format("w {}, h {}", Math.Abs(leftUp.x - rightDown.x), Math.Abs(leftUp.y - rightDown.y)));
+
+        circle1.transform.SetPositionAndRotation(leftUp, Quaternion.identity);
+        circle2.transform.SetPositionAndRotation(rightDown, Quaternion.identity);
     }
 
     void Update()
@@ -86,9 +89,12 @@ public class CameraController : MonoBehaviour
     {
         Vector2 min = bound.min;
         Vector2 max = bound.max;
+        lineDrawer.PushRect(bound, Color.yellow);
         Debug.Log(String.Format("min {0}, {1} max {0}, {1}", min.x, min.y, max.x, max.y));
+
         lineDrawer.PushLine(min, max, Color.blue); // top
         lineDrawer.PushLine(max, min, Color.white); // top
+
         // lineDrawer.PushLine(pos - new Vector3(-sz.x, sz.y, 0), pos - new Vector3(sz.x, sz.y, 0), Color.green); // bottom
 
         // lineDrawer.PushLine(pos - new Vector3(-sz.x, -sz.y, 0), pos - new Vector3(-sz.x, sz.y, 0), Color.green); // left
