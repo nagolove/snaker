@@ -55,6 +55,10 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public void checkPointMovement(Vector3 point)
+    {
+        
+    }
     void OnRenderObject()
     {
         Vector3 pos = transform.position;

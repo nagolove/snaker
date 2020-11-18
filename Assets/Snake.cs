@@ -23,6 +23,8 @@ public class Snake : MonoBehaviour
     public float speedUpAccelerationTime = 1.0f; // время разгона в секундах
     Vector3 delta;
     LineDrawer lineDrawer = new LineDrawer();    
+    CameraController camController;
+
     void OnRenderObject()
     {
         lineDrawer.DrawList();
@@ -55,6 +57,7 @@ public class Snake : MonoBehaviour
         leftEye = head.transform.Find("eye_l").gameObject;
         rightEye = head.transform.Find("eye_r").gameObject;
         isAccelerated = false;
+        camController = Camera.main.GetComponent<CameraController>();
     }
     public void rotateLeft()
     {
@@ -103,6 +106,10 @@ public class Snake : MonoBehaviour
         delta = checkAccelerate(isAccelerated, delta);
         // сделать торможение
         checkHeadInCamera();
+
+        camController.checkPointMovement(transform.position);
+
+
         head.transform.position += delta;
         MoveTail();
         isAccelerated = false;
@@ -110,39 +117,7 @@ public class Snake : MonoBehaviour
 
     void checkHeadInCamera()
     {
-        /*
-        Тут много отладочного дерьма.
-        Должна быть плавная прокрутка камеры если голова змеи слишком близко к краю экрана.
-        */
-        Vector3 d = transform.position - Camera.main.transform.position;
-        Vector2 d2 = new Vector2(d.x, d.y);
-        float len = d2.magnitude;
-        Camera cam = Camera.main;
-        
-        /*
-        Debug.Log(String.Format("pixelRect x,y,w,h {0},{1},{2},{3}",
-            cam.pixelRect.x, cam.pixelRect.y, cam.pixelRect.width, cam.pixelRect.height));
-        Debug.Log(String.Format("rect x,y,w,h {0},{1},{2},{3}",
-            cam.rect.x, cam.rect.y, cam.rect.width, cam.rect.height));
-        Debug.Log(String.Format("scaled w*h {0},{1}", cam.scaledPixelWidth, cam.scaledPixelWidth));
-        Debug.Log(String.Format("w*h {0},{1}", cam.pixelWidth, cam.pixelHeight));
-        Debug.Log(String.Format("ortho {0}", cam.orthographicSize));
-        Debug.Log(String.Format("scale {0}, {1}, {2}", cam.transform.localScale.x, cam.transform.localScale.y, cam.transform.localScale.z));
-        Debug.Log(String.Format("w*h {0}, {0}", Screen.width, Screen.height));
-        Debug.Log(String.Format("d {0}", d2.magnitude));
-        */
-
-        Vector2 worldUnitsInCamera;
-        worldUnitsInCamera.y = cam.orthographicSize * 2;
-        worldUnitsInCamera.x = worldUnitsInCamera.y * Screen.width / Screen.height;
-
-        Vector2 worldToPixelAmount;
-        worldToPixelAmount.x = Screen.width / worldUnitsInCamera.x;
-        worldToPixelAmount.y = Screen.height / worldUnitsInCamera.y;
-        // Debug.Log(String.Format("amount {0}, {1}", worldToPixelAmount.x, worldToPixelAmount.y));
-        Vector2 pixelDist = worldToPixelAmount * len;
-        // Debug.Log(String.Format("pixelDist {0}, {1}", pixelDist.x, pixelDist.y));
-
+       
 /*
         float outer = 1.2f;
         float extra = 100.0f;
