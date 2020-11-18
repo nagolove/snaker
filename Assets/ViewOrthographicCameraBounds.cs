@@ -7,7 +7,8 @@ public class ViewOrthographicCameraBounds : MonoBehaviour
 {
     LineDrawer lineDrawer = new LineDrawer();
     Camera cam;
-    void Start() {
+    void Start()
+    {
         cam = Camera.main;
     }
     void OnDrawGizmos()
@@ -24,11 +25,26 @@ public class ViewOrthographicCameraBounds : MonoBehaviour
         worldUnitsInCamera.y = cam.orthographicSize * 2;
         worldUnitsInCamera.x = worldUnitsInCamera.y * Screen.width / Screen.height;
 
-        Vector2 worldToPixelAmount;
-        worldToPixelAmount.x = Screen.width / worldUnitsInCamera.x;
-        worldToPixelAmount.y = Screen.height / worldUnitsInCamera.y;
+        Vector2 w2pix;
+        w2pix.x = Screen.width / (1.0f / worldUnitsInCamera.x);
+        w2pix.y = Screen.height / (1.0f / worldUnitsInCamera.y);
 
-        lineDrawer.PushLine(new Vector3(0, 0, 0), new Vector3(worldToPixelAmount.x * 1, worldToPixelAmount.y * 1, 0), Color.red);
+        LogOnce("worldToPixelAmount {0}, {1}", w2pix.x, w2pix.y);
+        Vector2 sz = new Vector2(cam.orthographicSize, cam.orthographicSize * ((float)Screen.width / (float)Screen.height));
+        Debug.Log(string.Format("sz {0},{1}", sz.x, sz.y));
+        
+        // float size = cam.orthographicSize * 0.9f;
+        sz *= 0.9f;
+
+        lineDrawer.PushLine(new Vector3(-sz.x, -sz.y, 0), new Vector3(sz.x, -sz.y, 0), Color.green); // top
+        lineDrawer.PushLine(new Vector3(-sz.x, sz.y, 0), new Vector3(sz.x, sz.y, 0), Color.green); // bottom
+
+        lineDrawer.PushLine(new Vector3(0,0, 0), new Vector3(sz.x, -sz.y, 0), Color.green); // top
+        lineDrawer.PushLine(new Vector3(0, 0, 0), new Vector3(sz.x, sz.y, 0), Color.green); // bottom
+
+        lineDrawer.PushLine(new Vector3(-sz.x, -sz.y, 0), new Vector3(-sz.x, sz.y, 0), Color.green); // left
+        lineDrawer.PushLine(new Vector3(sz.x, -sz.y, 0), new Vector3(sz.x, sz.y, 0), Color.green); // right
+
 
         lineDrawer.DrawList();
     }

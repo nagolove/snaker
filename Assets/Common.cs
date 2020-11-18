@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -97,6 +98,17 @@ public class Common : MonoBehaviour
                 Common.DrawLineGL(line.from, line.to, line.color);
             }
             lines.Clear();
+        }
+    }
+
+    static HashSet<string> logged = new HashSet<string>();
+    public static void LogOnce(string format, params object[] args)
+    {
+        string formatted = String.Format(format, args);
+        if (!logged.Contains(formatted)) 
+        {
+            Debug.Log(formatted);
+            logged.Add(formatted);
         }
     }
 }

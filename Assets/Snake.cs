@@ -119,6 +119,7 @@ public class Snake : MonoBehaviour
         float len = d2.magnitude;
         Camera cam = Camera.main;
         
+        /*
         Debug.Log(String.Format("pixelRect x,y,w,h {0},{1},{2},{3}",
             cam.pixelRect.x, cam.pixelRect.y, cam.pixelRect.width, cam.pixelRect.height));
         Debug.Log(String.Format("rect x,y,w,h {0},{1},{2},{3}",
@@ -129,6 +130,7 @@ public class Snake : MonoBehaviour
         Debug.Log(String.Format("scale {0}, {1}, {2}", cam.transform.localScale.x, cam.transform.localScale.y, cam.transform.localScale.z));
         Debug.Log(String.Format("w*h {0}, {0}", Screen.width, Screen.height));
         Debug.Log(String.Format("d {0}", d2.magnitude));
+        */
 
         Vector2 worldUnitsInCamera;
         worldUnitsInCamera.y = cam.orthographicSize * 2;
@@ -137,10 +139,11 @@ public class Snake : MonoBehaviour
         Vector2 worldToPixelAmount;
         worldToPixelAmount.x = Screen.width / worldUnitsInCamera.x;
         worldToPixelAmount.y = Screen.height / worldUnitsInCamera.y;
-        Debug.Log(String.Format("amount {0}, {1}", worldToPixelAmount.x, worldToPixelAmount.y));
+        // Debug.Log(String.Format("amount {0}, {1}", worldToPixelAmount.x, worldToPixelAmount.y));
         Vector2 pixelDist = worldToPixelAmount * len;
-        Debug.Log(String.Format("pixelDist {0}, {1}", pixelDist.x, pixelDist.y));
+        // Debug.Log(String.Format("pixelDist {0}, {1}", pixelDist.x, pixelDist.y));
 
+/*
         float outer = 1.2f;
         float extra = 100.0f;
         if (d.x > 0 && pixelDist.x * outer >= Screen.width / 2)
@@ -159,6 +162,7 @@ public class Snake : MonoBehaviour
         {
             cam.transform.Translate(new Vector3(0, -delta.x * extra * Time.deltaTime, 0));
         }
+        */
 
     }
 
