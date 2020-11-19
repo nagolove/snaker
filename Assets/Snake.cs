@@ -157,7 +157,7 @@ public class Snake : MonoBehaviour
         int collidersNum = 0;
         int maxAttemps = 50; // сколько попыток на окружность делать
         float r = getSpriteSize(circle);
-        float angle = UnityEngine.Random.Range;
+        float angle = UnityEngine.Random.Range(0.0f, 2.0f * (float)Math.PI);
         float dAngle = (float)Math.PI * 2.0f / maxAttemps;
         for (int i = 0; i < maxAttemps; ++i)
         {
