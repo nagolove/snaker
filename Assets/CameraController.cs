@@ -57,7 +57,22 @@ public class CameraController : MonoBehaviour
 
     public void checkPointMovement(Vector3 point)
     {
-        
+        if (point.x > rightBottom.x) {
+            transform.Translate(new Vector3(point.x - rightBottom.x, 0, 0));
+            updateBoundsRect();
+        }
+        if (point.x < leftTop.x) {
+            transform.Translate(new Vector3(point.x - leftTop.x, 0, 0));
+            updateBoundsRect();
+        }
+        if (point.y < rightBottom.y) {
+            transform.Translate(new Vector3(0, point.y - rightBottom.y, 0));
+            updateBoundsRect();
+        }
+        if (point.y > leftTop.y) {
+            transform.Translate(new Vector3(0, point.y - leftTop.y, 0));
+            updateBoundsRect();
+        }
     }
     void OnRenderObject()
     {
