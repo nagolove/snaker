@@ -102,43 +102,14 @@ public class Snake : MonoBehaviour
     {
         lastPosition = transform.position;
         delta = getEyeDirection() * speed * Time.deltaTime / 10.0f;
-        // delta = checkAccelerate(Input.GetKey("up"), delta);
         delta = checkAccelerate(isAccelerated, delta);
         // сделать торможение
-        checkHeadInCamera();
 
         camController.checkPointMovement(transform.position);
-
 
         head.transform.position += delta;
         MoveTail();
         isAccelerated = false;
-    }
-
-    void checkHeadInCamera()
-    {
-       
-/*
-        float outer = 1.2f;
-        float extra = 100.0f;
-        if (d.x > 0 && pixelDist.x * outer >= Screen.width / 2)
-        {
-            cam.transform.Translate(new Vector3(delta.x * extra * Time.deltaTime, 0, 0));
-        }        
-        if (d.x < 0 && pixelDist.x * outer >= Screen.width / 2)
-        {
-            cam.transform.Translate(new Vector3(-delta.x * extra * Time.deltaTime, 0, 0));
-        }
-        if (d.y > 0 && pixelDist.x * outer >= Screen.height / 2)
-        {
-            cam.transform.Translate(new Vector3(0, delta.x * extra * Time.deltaTime, 0));
-        }
-        if (d.y < 0 && pixelDist.x * outer >= Screen.height / 2)
-        {
-            cam.transform.Translate(new Vector3(0, -delta.x * extra * Time.deltaTime, 0));
-        }
-        */
-
     }
 
     public void grow()

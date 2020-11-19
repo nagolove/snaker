@@ -23,6 +23,7 @@ public class CameraController : MonoBehaviour
     {
         Vector3 sz = new Vector3(mainCamera.orthographicSize * ((float)Screen.width / (float)Screen.height),
             mainCamera.orthographicSize, 0);
+        sz *= 0.9f;
         leftTop = transform.position - new Vector3(sz.x, -sz.y, 0);
         rightBottom = transform.position - new Vector3(-sz.x, sz.y, 0);
     }
