@@ -1064,7 +1064,7 @@ GameObject:
   - component: {fileID: 1840744582}
   - component: {fileID: 1840744581}
   m_Layer: 0
-  m_Name: SnakesController
+  m_Name: snakesManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1082,6 +1082,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b461bdddfa7568078a28a4ced95f24e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxNum: 10
+  snakePrefab: {fileID: 2149349629295510411, guid: caee1f429385fce9ba3c743472dadd77,
+    type: 3}
+  snakes: []
+  secondCorner: {x: 300, y: 300, z: 0}
 --- !u!4 &1840744582
 Transform:
   m_ObjectHideFlags: 0
@@ -1090,7 +1095,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1840744580}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.7, y: 1.42, z: -0.5722656}
+  m_LocalPosition: {x: -111.5, y: -74.6, z: -0.5722656}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

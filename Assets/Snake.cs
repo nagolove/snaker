@@ -24,6 +24,7 @@ public class Snake : MonoBehaviour
     Vector3 delta;
     LineDrawer lineDrawer = new LineDrawer();    
     CameraController camController;
+    SnakesManager snakesManager;
 
     void OnRenderObject()
     {
@@ -58,6 +59,11 @@ public class Snake : MonoBehaviour
         rightEye = head.transform.Find("eye_r").gameObject;
         isAccelerated = false;
         camController = Camera.main.GetComponent<CameraController>();
+        snakesManager = GameObject.Find("snakesManager").GetComponent<SnakesManager>();
+        if (!snakesManager)
+        {
+            Debug.LogWarning("snakes manager not found.");
+        }
     }
     public void rotateLeft()
     {
@@ -107,7 +113,10 @@ public class Snake : MonoBehaviour
 
         camController.checkPointMovement(transform.position);
 
-        head.transform.position += delta;
+        Vector3 newPos = head.transform.position + delta;
+        if (snakesManager.inArea(newPos)) {
+            head.transform.position = newPos;
+        }
         MoveTail();
         isAccelerated = false;
     }
