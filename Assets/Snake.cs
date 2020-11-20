@@ -50,8 +50,8 @@ public class Snake : MonoBehaviour
         t.color = Color.black;
     }
     void Start()
-    {
-        head = GameObject.Find("SnakeHead");
+    {        
+        head = transform.FindChild("SnakeHead").gameObject;
         circle = head.transform.Find("circle").gameObject;
         spriteSize = getSpriteSize(head);
         putTextAtPoint(transform);
