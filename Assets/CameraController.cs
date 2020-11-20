@@ -7,7 +7,7 @@ using static Common;
 public class CameraController : MonoBehaviour
 {
     Camera mainCamera;
-    public float speed = 10.0f;
+    public float speed;
     public float minZoom, maxZoom;
     public float scaleConst = 0.1f;
     LineDrawer lineDrawer = new LineDrawer();
@@ -45,9 +45,9 @@ public class CameraController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            if (Input.GetKey("a"))
-                transform.Translate(new Vector3(speed * Time.deltaTime, 0));
             if (Input.GetKey("d"))
+                transform.Translate(new Vector3(speed * Time.deltaTime, 0));
+            if (Input.GetKey("a"))
                 transform.Translate(new Vector3(-speed * Time.deltaTime, 0));
             if (Input.GetKey("w"))
                 transform.Translate(new Vector3(0, speed * Time.deltaTime));

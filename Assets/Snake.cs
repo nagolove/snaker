@@ -13,7 +13,8 @@ public class Snake : MonoBehaviour
     float spriteSize;
     public float speed = 1.0f;
     public static int num;
-    public float rotAngle = 2.0f;
+    [Header("Угол поворота в градусах")]
+    public float rotAngle;
     List<GameObject> nodes = new List<GameObject>();
     Vector3 lastPosition;
     GameObject leftEye, rightEye;
@@ -52,6 +53,7 @@ public class Snake : MonoBehaviour
     }
     void Start()
     {
+        Debug.LogFormat("Start snake [{0}]", name);
         head = this.gameObject;
         circle = head.transform.Find("circle").gameObject;
         spriteSize = getSpriteSize(head);
@@ -74,6 +76,11 @@ public class Snake : MonoBehaviour
     public void rotateRight()
     {
         transform.Rotate(0, 0, -rotAngle);
+    }
+
+    public void setRotation(float angle)
+    {
+        transform.Rotate(0, 0, angle);
     }
 
     Vector3 checkAccelerate(Boolean buttonValue, Vector3 delta)
