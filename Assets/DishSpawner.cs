@@ -38,4 +38,17 @@ public class DishSpawner : MonoBehaviour
             time = newTime;
         }
     }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        int i = 0;
+        Vector3 from = new Vector3(Mathf.Cos(0.0f) * rad, Mathf.Sin(0.0f) * rad);
+        for (float angle = 0.0f; angle < Mathf.PI * 2.0f; angle += rad * 3.0f)
+        {
+            Vector3 to = new Vector3(Mathf.Cos(angle) * rad, Mathf.Sin(angle) * rad);
+            // Gizmos.DrawLine(from, to);
+            from = to;
+        }
+    }
 }
