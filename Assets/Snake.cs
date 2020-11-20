@@ -22,14 +22,15 @@ public class Snake : MonoBehaviour
     public float maxSpeedUp = 7; // во сколько раз вырастет скорость максимум
     public float speedUpAccelerationTime = 1.0f; // время разгона в секундах
     Vector3 delta;
-    LineDrawer lineDrawer = new LineDrawer();    
+    LineDrawer lineDrawer = new LineDrawer();
     CameraController camController;
     SnakesManager snakesManager;
+    public bool userControlled = false;
 
     void OnRenderObject()
     {
         lineDrawer.DrawList();
-    }    
+    }
     Vector3 getEyeDirection()
     {
         Vector3 n = (rightEye.transform.position - leftEye.transform.position);
@@ -50,7 +51,7 @@ public class Snake : MonoBehaviour
         t.color = Color.black;
     }
     void Start()
-    {        
+    {
         head = this.gameObject;
         circle = head.transform.Find("circle").gameObject;
         spriteSize = getSpriteSize(head);
@@ -111,10 +112,14 @@ public class Snake : MonoBehaviour
         delta = checkAccelerate(isAccelerated, delta);
         // сделать торможение
 
-        camController.checkPointMovement(transform.position);
+        if (userControlled)
+        {
+            camController.checkPointMovement(transform.position);
+        }
 
         Vector3 newPos = head.transform.position + delta;
-        if (snakesManager.inArea(newPos)) {
+        if (snakesManager.inArea(newPos))
+        {
             head.transform.position = newPos;
         }
         MoveTail();

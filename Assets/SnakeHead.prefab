@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 2149349629295510410}
   - component: {fileID: 2149349629295510408}
   - component: {fileID: 2149349629295510415}
-  - component: {fileID: 2149349629295510413}
+  - component: {fileID: 2330328796571694773}
   m_Layer: 0
   m_Name: SnakeHead
   m_TagString: Snake
@@ -266,6 +266,7 @@ MonoBehaviour:
   rotAngle: 2
   maxSpeedUp: 11.45
   speedUpAccelerationTime: 7.99
+  userControlled: 0
 --- !u!58 &2149349629295510415
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -282,7 +283,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!50 &2149349629295510413
+--- !u!50 &2330328796571694773
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -290,7 +291,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2149349629295510411}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

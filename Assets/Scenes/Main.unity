@@ -231,7 +231,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: userSnake
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 2149349629295510413, guid: caee1f429385fce9ba3c743472dadd77,
+        type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2149349629295510413, guid: caee1f429385fce9ba3c743472dadd77, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: caee1f429385fce9ba3c743472dadd77, type: 3}
 --- !u!1 &252542730
 GameObject:
