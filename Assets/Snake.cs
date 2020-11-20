@@ -51,7 +51,7 @@ public class Snake : MonoBehaviour
     }
     void Start()
     {        
-        head = transform.FindChild("SnakeHead").gameObject;
+        head = this.gameObject;
         circle = head.transform.Find("circle").gameObject;
         spriteSize = getSpriteSize(head);
         putTextAtPoint(transform);
